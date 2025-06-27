@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>日拱一卒，马上开动，Done is better than Perfect</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.8">
+    
+    
+    
+      <meta name="robots" content="index, follow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.8d048772ae72ab11245a0e296d1f2a36d3e3dd376c6c867394d6cc659c68fc37.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/index.xml" rel="alternate" type="application/rss+xml" title="日拱一卒，马上开动，Done is better than Perfect" />
+      <link href="/index.xml" rel="feed" type="application/rss+xml" title="日拱一卒，马上开动，Done is better than Perfect" />
+      
+    
+
+    
+      <link rel="canonical" href="https://yinshaojun001.github.io/">
+    
+
+    <meta property="og:url" content="https://yinshaojun001.github.io/">
+  <meta property="og:site_name" content="日拱一卒，马上开动，Done is better than Perfect">
+  <meta property="og:title" content="日拱一卒，马上开动，Done is better than Perfect">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="日拱一卒，马上开动，Done is better than Perfect">
+  <meta itemprop="datePublished" content="2025-06-26T13:55:41+08:00">
+  <meta itemprop="dateModified" content="2025-06-26T13:55:41+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="日拱一卒，马上开动，Done is better than Perfect">
+
+      
+    
+	
+  </head><body class="ma0 avenir bg-near-white production">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        日拱一卒，马上开动，Done is better than Perfect
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          日拱一卒，马上开动，Done is better than Perfect
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy nested-links mid-gray">
+    
+  </article>
+
+  
+  
+  
+  
+  
+
+  
+    <div class="pa3 pa4-ns w-100 w-70-ns center">
+      
+
+      <section class="w-100 mw8">
+        
+        
+          <div class="w-100 mb4 relative">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l dark-gray no-underline">
+    <div class="flex-column flex-row-ns flex">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/posts/mysql_%E4%BA%8B%E5%8A%A1%E4%B8%8Emvcc%E8%A1%8C%E4%B8%BA%E8%AF%A6%E8%A7%A3/" class="color-inherit dim link">
+            MySQL_事务与MVCC行为详解
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          <h1 id="-mysql-事务一致性与-mvcc-行为详解">📘 MySQL 事务一致性与 MVCC 行为详解</h1>
+<p>本笔记主要围绕以下问题展开讲解：</p>
+<blockquote>
+<p>事务 A 中执行了 <code>SELECT * FROM table1</code> 还未提交，事务 B 中执行了新增并提交，此时事务 A 执行 <code>SELECT * FROM table1 WHERE id BETWEEN 1 AND 47 FOR UPDATE</code> 会看到事务 B 插入的数据吗？</p></blockquote>
+<hr>
+<h2 id="一前提知识mysql-innodb-的事务机制">一、前提知识：MySQL InnoDB 的事务机制</h2>
+<h3 id="11-默认隔离级别repeatable-read">1.1 默认隔离级别：REPEATABLE READ</h3>
+<p>MySQL 的 InnoDB 存储引擎默认采用 <code>REPEATABLE READ</code> 隔离级别，它具备以下特点：</p>
+<ul>
+<li>同一个事务中多次读取结果一致（可重复读）</li>
+<li>可通过 MVCC 保证一致性</li>
+<li>防止不可重复读 ✅</li>
+<li>防止幻读（配合间隙锁）✅</li>
+</ul>
+<hr>
+<h3 id="12-mvcc多版本并发控制">1.2 MVCC（多版本并发控制）</h3>
+<p>MVCC 是 InnoDB 在 <code>REPEATABLE READ</code> 和 <code>READ COMMITTED</code> 中实现非锁定一致性读的核心技术。</p>
+<p><strong>每个事务开启时会生成一个一致性视图（Read View）</strong>，之后的所有查询操作都基于该视图决定哪些版本是“可见”的。</p>
+<hr>
+<h2 id="二核心问题事务间的数据可见性">二、核心问题：事务间的数据可见性</h2>
+<h3 id="问题描述">问题描述：</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 事务A
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">START</span> <span style="color:#66d9ef">TRANSACTION</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> table1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 此时创建了快照（Read View）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 事务B
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">START</span> <span style="color:#66d9ef">TRANSACTION</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> table1(id, name) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">30</span>, <span style="color:#e6db74">&#39;B&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">COMMIT</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 事务A 再次执行：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> table1 <span style="color:#66d9ef">WHERE</span> id <span style="color:#66d9ef">BETWEEN</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">AND</span> <span style="color:#ae81ff">47</span> <span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">UPDATE</span>;
+</span></span></code></pre></div><h3 id="会看到-id--30-吗">会看到 id = 30 吗？</h3>
+<blockquote>
+<p>❌ 不会！</p>
+        </div>
+        <a href="/posts/mysql_%E4%BA%8B%E5%8A%A1%E4%B8%8Emvcc%E8%A1%8C%E4%B8%BA%E8%AF%A6%E8%A7%A3/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+          <div class="w-100 mb4 relative">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l dark-gray no-underline">
+    <div class="flex-column flex-row-ns flex">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/posts/my-first-post/" class="color-inherit dim link">
+            深入理解 Java 虚拟机 - 学习笔记整理（基于《深入理解Java虚拟机》）--01
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          <p>⸻</p>
+<p>深入理解 Java 虚拟机 - 学习笔记整理（基于《深入理解Java虚拟机》）</p>
+<p>Java 的优点
+1.	摆脱硬件平台束缚，一次编写，到处运行的理想（Write Once, Run Anywhere）
+•	Java 程序编译生成的是 .class 字节码文件，而不是直接生成机器码。
+•	JVM（Java 虚拟机）在不同的硬件和操作系统平台上有不同的实现，负责将统一的字节码“翻译”为当前平台可以运行的机器指令。
+🔍 为什么这是优点？别的语言有吗？哪些语言受硬件平台限制？
+•	很多语言（如 C/C++）编译生成的是特定平台的机器码，换平台通常需要重新编译。
+•	Java 依赖 JVM 实现了平台无关性，不需要重新编译。
+•	类似的语言还有 Python（解释器）、.NET（通过 CLR）、Kotlin（编译为 JVM 字节码）等。
+•	**受硬件平台限制的语言：**C、C++、Rust（默认需要重新编译才能跨平台）。
+2.	相对安全的内存管理和访问机制，避免了绝大部分内存泄漏和指针越界问题
+•	Java 拥有自动垃圾回收机制，开发者不需要手动释放内存。
+•	不允许程序直接操作指针（如 C/C++ 中的指针运算）。
+🔍 什么叫内存泄漏？
+•	指程序中某些对象不再使用，却无法被 GC 回收，导致内存持续占用。
+•	示例：对象被无意义地引用着，GC 无法判断可以释放。
+🔍 什么是指针越界？
+•	在 C/C++ 中访问数组或内存块时下标超出分配范围，可能导致读取或写入非法内存，引发崩溃或安全问题。
+🔍 内存管理 vs 访问机制
+•	内存管理机制：如何分配和回收内存（Java 使用堆、栈结构，GC 机制自动回收）。
+•	内存访问机制：如何访问内存中数据，是否有越界检测、是否暴露底层地址（Java 通过数组越界检查、封装访问）。
+3.	实现了热点代码检测和运行时编译及优化（JIT），程序性能随运行时间优化
+•	JVM 运行过程中，会监控哪些代码执行频繁（热点代码）。
+•	使用 JIT 编译器将热点代码从字节码编译为本地机器码，提高执行速度。
+🔍 为什么这样能提高性能？
+•	热点代码一旦编译为机器码，执行速度大幅提高。
+•	JIT 编译还能根据运行时数据做优化（如内联、逃逸分析、去锁）。
+4.	拥有完善的 API 体系与强大生态
+•	Java 官方提供广泛的标准库（集合、IO、并发、网络等）。
+•	社区支持丰富：Guava、Apache Commons、Spring、Hibernate 等。</p>
+        </div>
+        <a href="/posts/my-first-post/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+      </section>
+
+      
+
+    </div>
+  
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="https://yinshaojun001.github.io/" >
+    &copy;  日拱一卒，马上开动，Done is better than Perfect 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
