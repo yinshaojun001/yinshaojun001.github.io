@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>多线程CompletableFuture 和 parallelStream使用 | 日拱一卒，Done is better than perfect</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="CompletableFuture 和 parallelStream 都是 Java 中用于并发执行任务的工具，属于 异步编程/并行计算 的范畴，但它们的使用场景、机制和控制能力各有不同。
+
+✅ 一、
+CompletableFuture
+ 使用及注意事项
+🔹 1. 简介
+CompletableFuture 是 Java 8 引入的用于实现异步编程的类，属于 java.util.concurrent 包，可以：">
+    <meta name="generator" content="Hugo 0.147.8">
+    
+    
+    
+      <meta name="robots" content="index, follow">
+    
+    <meta name="author" content="尹绍钧">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.8d048772ae72ab11245a0e296d1f2a36d3e3dd376c6c867394d6cc659c68fc37.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://yinshaojun001.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/">
+    
+
+    <meta property="og:url" content="https://yinshaojun001.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="多线程CompletableFuture 和 parallelStream使用">
+  <meta property="og:description" content="CompletableFuture 和 parallelStream 都是 Java 中用于并发执行任务的工具，属于 异步编程/并行计算 的范畴，但它们的使用场景、机制和控制能力各有不同。
+✅ 一、 CompletableFuture 使用及注意事项 🔹 1. 简介 CompletableFuture 是 Java 8 引入的用于实现异步编程的类，属于 java.util.concurrent 包，可以：">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-30T22:26:28+08:00">
+    <meta property="article:modified_time" content="2025-06-30T22:26:28+08:00">
+
+  <meta itemprop="name" content="多线程CompletableFuture 和 parallelStream使用">
+  <meta itemprop="description" content="CompletableFuture 和 parallelStream 都是 Java 中用于并发执行任务的工具，属于 异步编程/并行计算 的范畴，但它们的使用场景、机制和控制能力各有不同。
+✅ 一、 CompletableFuture 使用及注意事项 🔹 1. 简介 CompletableFuture 是 Java 8 引入的用于实现异步编程的类，属于 java.util.concurrent 包，可以：">
+  <meta itemprop="datePublished" content="2025-06-30T22:26:28+08:00">
+  <meta itemprop="dateModified" content="2025-06-30T22:26:28+08:00">
+  <meta itemprop="wordCount" content="910">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="多线程CompletableFuture 和 parallelStream使用">
+  <meta name="twitter:description" content="CompletableFuture 和 parallelStream 都是 Java 中用于并发执行任务的工具，属于 异步编程/并行计算 的范畴，但它们的使用场景、机制和控制能力各有不同。
+✅ 一、 CompletableFuture 使用及注意事项 🔹 1. 简介 CompletableFuture 是 Java 8 引入的用于实现异步编程的类，属于 java.util.concurrent 包，可以：">
+
+      
+    
+	
+  </head><body class="ma0 avenir bg-near-white production">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-white">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        日拱一卒，Done is better than perfect
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/" title="首页 页">
+              首页
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/posts/" title="归档 页">
+              归档
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/about/" title="关于 页">
+              关于
+            </a>
+          </li>
+          
+        </ul>
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Posts
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">多线程CompletableFuture 和 parallelStream使用</h1>
+      
+      <p class="tracked"><strong>尹绍钧</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2025-06-30T22:26:28+08:00">六月 30, 2025</time>
+      
+
+      
+      
+        <span class="f6 mv4 dib tracked"> -  </span>
+        <span class="f6 mv4 dib tracked"> -  </span>
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links #333 pr4-l w-two-thirds-l"><p>CompletableFuture 和 parallelStream 都是 Java 中用于<strong>并发执行任务</strong>的工具，属于 <strong>异步编程/并行计算</strong> 的范畴，但它们的使用场景、机制和控制能力各有不同。</p>
+<hr>
+<h2 id="-一"><strong>✅ 一、</strong></h2>
+<h2 id="completablefuture"><strong>CompletableFuture</strong></h2>
+<h2 id="使用及注意事项"> <strong>使用及注意事项</strong></h2>
+<h3 id="-1-简介"><strong>🔹 1. 简介</strong></h3>
+<p>CompletableFuture 是 Java 8 引入的用于实现异步编程的类，属于 java.util.concurrent 包，可以：</p>
+<ul>
+<li>
+<p>异步执行任务</p>
+</li>
+<li>
+<p>组合多个异步任务</p>
+</li>
+<li>
+<p>设置任务完成后的回调</p>
+</li>
+<li>
+<p>更灵活地控制线程池</p>
+</li>
+</ul>
+<h3 id="-2-常用方法"><strong>🔹 2. 常用方法</strong></h3>
+<pre tabindex="0"><code>CompletableFuture.supplyAsync(() -&gt; {
+    // 有返回值的异步任务
+    return &#34;hello&#34;;
+});
+
+CompletableFuture.runAsync(() -&gt; {
+    // 无返回值的异步任务
+    System.out.println(&#34;run&#34;);
+});
+</code></pre><h4 id="连续执行"><strong>连续执行：</strong></h4>
+<pre tabindex="0"><code>CompletableFuture.supplyAsync(() -&gt; {
+    return 10;
+}).thenApply(result -&gt; {
+    return result * 2;
+}).thenAccept(System.out::println); // 输出 20
+</code></pre><h4 id="组合任务"><strong>组合任务：</strong></h4>
+<pre tabindex="0"><code>CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(() -&gt; 10);
+CompletableFuture&lt;Integer&gt; f2 = CompletableFuture.supplyAsync(() -&gt; 20);
+
+f1.thenCombine(f2, Integer::sum)
+  .thenAccept(System.out::println); // 输出 30
+</code></pre><h4 id="自定义线程池"><strong>自定义线程池：</strong></h4>
+<pre tabindex="0"><code>ExecutorService executor = Executors.newFixedThreadPool(4);
+
+CompletableFuture.supplyAsync(() -&gt; &#34;data&#34;, executor);
+</code></pre><hr>
+<h3 id="-注意事项"><strong>⚠️ 注意事项</strong></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>项目</strong></th>
+          <th><strong>说明</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>异常处理</strong></td>
+          <td>推荐使用 .exceptionally() 或 .handle() 处理异常，防止线程崩溃</td>
+      </tr>
+      <tr>
+          <td><strong>线程池管理</strong></td>
+          <td>不建议使用默认线程池（ForkJoinPool），应自定义线程池以便控制并发资源</td>
+      </tr>
+      <tr>
+          <td><strong>任务阻塞</strong></td>
+          <td>使用 .join() 或 .get() 会阻塞当前线程，不建议在主线程或Web线程中调用</td>
+      </tr>
+      <tr>
+          <td><strong>链式执行</strong></td>
+          <td>.thenApply() 是同步执行、.thenApplyAsync() 是异步执行</td>
+      </tr>
+      <tr>
+          <td><strong>组合过多任务</strong></td>
+          <td>可以用 CompletableFuture.allOf() 合并多个异步任务，避免嵌套地狱</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-二"><strong>✅ 二、</strong></h2>
+<h2 id="parallelstream"><strong>parallelStream</strong></h2>
+<h2 id="使用及注意事项-1"> <strong>使用及注意事项</strong></h2>
+<h3 id="-1-简介-1"><strong>🔹 1. 简介</strong></h3>
+<p>parallelStream 是 Java 8 中 Stream 接口提供的并行处理功能，底层使用 ForkJoinPool.commonPool() 进行任务分发。</p>
+<pre tabindex="0"><code>List&lt;String&gt; list = Arrays.asList(&#34;a&#34;, &#34;b&#34;, &#34;c&#34;);
+list.parallelStream().forEach(System.out::println);
+</code></pre><h3 id="-2-适用场景"><strong>🔹 2. 适用场景</strong></h3>
+<ul>
+<li>
+<p>数据量较大</p>
+</li>
+<li>
+<p>CPU密集型任务（如数学计算、压缩加密）</p>
+</li>
+<li>
+<p>操作无副作用（无共享变量）</p>
+</li>
+</ul>
+<hr>
+<h3 id="-注意事项-1"><strong>⚠️ 注意事项</strong></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>项目</strong></th>
+          <th><strong>说明</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>线程池不可控</strong></td>
+          <td>使用的是公共的 ForkJoinPool.commonPool()，难以调优或隔离任务</td>
+      </tr>
+      <tr>
+          <td><strong>不可预测顺序</strong></td>
+          <td>parallelStream().forEach() 是无序的，用 .forEachOrdered() 保持顺序</td>
+      </tr>
+      <tr>
+          <td><strong>线程安全问题</strong></td>
+          <td>不要在并行流中修改共享变量，如 List.add()，需用线程安全结构或 collect()</td>
+      </tr>
+      <tr>
+          <td><strong>性能不一定更好</strong></td>
+          <td>小数据量时反而更慢（线程调度成本高于串行），需评估后使用</td>
+      </tr>
+      <tr>
+          <td><strong>不适合 I/O 密集</strong></td>
+          <td>如网络、数据库操作，使用线程池 + CompletableFuture 更合适</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-三选择建议"><strong>✅ 三、选择建议</strong></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>使用场景</strong></th>
+          <th><strong>推荐工具</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>并行处理 List，无共享变量</td>
+          <td>parallelStream</td>
+      </tr>
+      <tr>
+          <td>控制线程数、复杂任务链</td>
+          <td>CompletableFuture</td>
+      </tr>
+      <tr>
+          <td>I/O 密集型任务（网络/数据库）</td>
+          <td>CompletableFuture + 自定义线程池</td>
+      </tr>
+      <tr>
+          <td>有返回值或任务组合</td>
+          <td>CompletableFuture.supplyAsync().thenCombine()</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-四实际案例对比"><strong>✅ 四、实际案例对比</strong></h2>
+<h3 id="1-parallelstream-示例"><strong>1️⃣ parallelStream 示例</strong></h3>
+<pre tabindex="0"><code>List&lt;Integer&gt; data = IntStream.range(1, 100).boxed().collect(Collectors.toList());
+data.parallelStream()
+    .map(i -&gt; i * 2)
+    .forEach(System.out::println);
+</code></pre><h3 id="2-completablefuture-并行示例"><strong>2️⃣ CompletableFuture 并行示例</strong></h3>
+<pre tabindex="0"><code>List&lt;Integer&gt; data = IntStream.range(1, 100).boxed().collect(Collectors.toList());
+ExecutorService executor = Executors.newFixedThreadPool(10);
+
+List&lt;CompletableFuture&lt;Void&gt;&gt; futures = data.stream()
+    .map(i -&gt; CompletableFuture.runAsync(() -&gt; {
+        System.out.println(Thread.currentThread().getName() + &#34;: &#34; + i * 2);
+    }, executor))
+    .collect(Collectors.toList());
+
+CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+executor.shutdown();
+</code></pre><hr>
+<h2 id="-总结"><strong>📌 总结</strong></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>对比项</strong></th>
+          <th>CompletableFuture</th>
+          <th>parallelStream</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>控制性</td>
+          <td>强（可定义线程池、异常处理）</td>
+          <td>弱（用公共线程池）</td>
+      </tr>
+      <tr>
+          <td>并发类型</td>
+          <td>适合 IO 密集或复杂业务</td>
+          <td>适合 CPU 密集型任务</td>
+      </tr>
+      <tr>
+          <td>异步组合能力</td>
+          <td>支持 then、combine 等链式调用</td>
+          <td>不支持复杂任务组合</td>
+      </tr>
+      <tr>
+          <td>开发复杂度</td>
+          <td>略高</td>
+          <td>简单</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-white bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="https://yinshaojun001.github.io/" >
+    &copy;  日拱一卒，Done is better than perfect 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
