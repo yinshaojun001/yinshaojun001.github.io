@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>日拱一卒，Done is better than perfect</title>
+    <link>https://yinshaojun001.github.io/</link>
+    <description>Recent content on 日拱一卒，Done is better than perfect</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <lastBuildDate>Fri, 18 Jul 2025 10:09:28 +0800</lastBuildDate>
+    <atom:link href="https://yinshaojun001.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>系统批量对接放开最大限制</title>
+      <link>https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/</link>
+      <pubDate>Fri, 18 Jul 2025 10:09:28 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/</guid>
+      <description>&lt;h2&gt;&lt;/h2&gt;&#xA;&lt;h3 id=&#34;一项目现状分析&#34;&gt;&lt;strong&gt;一、项目现状分析&lt;/strong&gt;&lt;/h3&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;&lt;strong&gt;项目&lt;/strong&gt;&lt;/th&gt;&#xA;          &lt;th&gt;&lt;strong&gt;内容&lt;/strong&gt;&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;生产环境&lt;/td&gt;&#xA;          &lt;td&gt;8G 单实例服务器，（cpu 可扩展）&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;当前处理限制&lt;/td&gt;&#xA;          &lt;td&gt;前端限制 Excel 最多 20 个产品，后端同步处理&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;处理逻辑&lt;/td&gt;&#xA;          &lt;td&gt;Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;痛点&lt;/td&gt;&#xA;          &lt;td&gt;&amp;gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;二需求形成&#34;&gt;&lt;strong&gt;二、需求形成&lt;/strong&gt;&lt;/h3&gt;&#xA;&lt;p&gt;831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>捋一下JMM</title>
+      <link>https://yinshaojun001.github.io/posts/%E6%8D%8B%E4%B8%80%E4%B8%8Bjmm/</link>
+      <pubDate>Wed, 16 Jul 2025 23:51:45 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E6%8D%8B%E4%B8%80%E4%B8%8Bjmm/</guid>
+      <description>&lt;h1 id=&#34;java-memory-modeljmm与-jvm-运行时内存区域详解&#34;&gt;Java Memory Model（JMM）与 JVM 运行时内存区域详解&lt;/h1&gt;&#xA;&lt;h2 id=&#34;一java-memory-modeljmm概述&#34;&gt;一、Java Memory Model（JMM）概述&lt;/h2&gt;&#xA;&lt;p&gt;JMM（Java Memory Model）是 Java 虚拟机规范中定义的&lt;strong&gt;线程之间如何共享变量&lt;/strong&gt;的一种抽象模型，用于屏蔽各种硬件和操作系统内存访问差异，确保多线程程序在不同平台下都能实现一致的内存语义。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>记一次问题梳理思路</title>
+      <link>https://yinshaojun001.github.io/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/</link>
+      <pubDate>Fri, 11 Jul 2025 08:51:56 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/</guid>
+      <description>&lt;h2 id=&#34;situation背景&#34;&gt;&lt;strong&gt;（Situation）背景&lt;/strong&gt;&lt;/h2&gt;&#xA;&lt;p&gt;在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望&lt;strong&gt;一次批量操作上百甚至上千个产品&lt;/strong&gt;。但我们发现，在和流程引擎联动进行批量任务时，&lt;strong&gt;系统出现了数据库连接池耗尽、发布失败的问题&lt;/strong&gt;，影响了用户体验并造成流程失败。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Arthas初始用</title>
+      <link>https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/</link>
+      <pubDate>Mon, 07 Jul 2025 17:56:54 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/</guid>
+      <description>&lt;p&gt;在服务器中使用&lt;/p&gt;&#xA;&lt;h2 id=&#34;一行命令快速启动&#34;&gt;&lt;strong&gt;一行命令快速启动&lt;/strong&gt;&lt;/h2&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;curl -O https://arthas.aliyun.com/arthas-boot.jar &amp;amp;&amp;amp; java -jar arthas-boot.jar&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;使用 arthas 查看是否存在某个类:&#xA;sc -d 全限定类名&#xA;sc -d com.xxx.demo.service.UserService&#xA;这条命令的含义是：&lt;strong&gt;查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）&lt;/strong&gt;。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>多线程CompletableFuture 和 parallelStream使用</title>
+      <link>https://yinshaojun001.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 30 Jun 2025 22:26:28 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/</guid>
+      <description>&lt;p&gt;CompletableFuture 和 parallelStream 都是 Java 中用于&lt;strong&gt;并发执行任务&lt;/strong&gt;的工具，属于 &lt;strong&gt;异步编程/并行计算&lt;/strong&gt; 的范畴，但它们的使用场景、机制和控制能力各有不同。&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;-一&#34;&gt;&lt;strong&gt;✅ 一、&lt;/strong&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;completablefuture&#34;&gt;&lt;strong&gt;CompletableFuture&lt;/strong&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;使用及注意事项&#34;&gt; &lt;strong&gt;使用及注意事项&lt;/strong&gt;&lt;/h2&gt;&#xA;&lt;h3 id=&#34;-1-简介&#34;&gt;&lt;strong&gt;🔹 1. 简介&lt;/strong&gt;&lt;/h3&gt;&#xA;&lt;p&gt;CompletableFuture 是 Java 8 引入的用于实现异步编程的类，属于 java.util.concurrent 包，可以：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>MySQL_事务与MVCC行为详解</title>
+      <link>https://yinshaojun001.github.io/posts/mysql_%E4%BA%8B%E5%8A%A1%E4%B8%8Emvcc%E8%A1%8C%E4%B8%BA%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Thu, 26 Jun 2025 13:55:41 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/mysql_%E4%BA%8B%E5%8A%A1%E4%B8%8Emvcc%E8%A1%8C%E4%B8%BA%E8%AF%A6%E8%A7%A3/</guid>
+      <description>&lt;h1 id=&#34;-mysql-事务一致性与-mvcc-行为详解&#34;&gt;📘 MySQL 事务一致性与 MVCC 行为详解&lt;/h1&gt;&#xA;&lt;p&gt;本笔记主要围绕以下问题展开讲解：&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;事务 A 中执行了 &lt;code&gt;SELECT * FROM table1&lt;/code&gt; 还未提交，事务 B 中执行了新增并提交，此时事务 A 执行 &lt;code&gt;SELECT * FROM table1 WHERE id BETWEEN 1 AND 47 FOR UPDATE&lt;/code&gt; 会看到事务 B 插入的数据吗？&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>深入理解 Java 虚拟机 - 学习笔记整理（基于《深入理解Java虚拟机》）--01</title>
+      <link>https://yinshaojun001.github.io/posts/my-first-post/</link>
+      <pubDate>Tue, 24 Jun 2025 08:58:00 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/my-first-post/</guid>
+      <description>&lt;p&gt;⸻&lt;/p&gt;&#xA;&lt;p&gt;深入理解 Java 虚拟机 - 学习笔记整理（基于《深入理解Java虚拟机》）&lt;/p&gt;&#xA;&lt;p&gt;Java 的优点&#xA;1.&#x9;摆脱硬件平台束缚，一次编写，到处运行的理想（Write Once, Run Anywhere）&#xA;•&#x9;Java 程序编译生成的是 .class 字节码文件，而不是直接生成机器码。&#xA;•&#x9;JVM（Java 虚拟机）在不同的硬件和操作系统平台上有不同的实现，负责将统一的字节码“翻译”为当前平台可以运行的机器指令。&#xA;🔍 为什么这是优点？别的语言有吗？哪些语言受硬件平台限制？&#xA;•&#x9;很多语言（如 C/C++）编译生成的是特定平台的机器码，换平台通常需要重新编译。&#xA;•&#x9;Java 依赖 JVM 实现了平台无关性，不需要重新编译。&#xA;•&#x9;类似的语言还有 Python（解释器）、.NET（通过 CLR）、Kotlin（编译为 JVM 字节码）等。&#xA;•&#x9;**受硬件平台限制的语言：**C、C++、Rust（默认需要重新编译才能跨平台）。&#xA;2.&#x9;相对安全的内存管理和访问机制，避免了绝大部分内存泄漏和指针越界问题&#xA;•&#x9;Java 拥有自动垃圾回收机制，开发者不需要手动释放内存。&#xA;•&#x9;不允许程序直接操作指针（如 C/C++ 中的指针运算）。&#xA;🔍 什么叫内存泄漏？&#xA;•&#x9;指程序中某些对象不再使用，却无法被 GC 回收，导致内存持续占用。&#xA;•&#x9;示例：对象被无意义地引用着，GC 无法判断可以释放。&#xA;🔍 什么是指针越界？&#xA;•&#x9;在 C/C++ 中访问数组或内存块时下标超出分配范围，可能导致读取或写入非法内存，引发崩溃或安全问题。&#xA;🔍 内存管理 vs 访问机制&#xA;•&#x9;内存管理机制：如何分配和回收内存（Java 使用堆、栈结构，GC 机制自动回收）。&#xA;•&#x9;内存访问机制：如何访问内存中数据，是否有越界检测、是否暴露底层地址（Java 通过数组越界检查、封装访问）。&#xA;3.&#x9;实现了热点代码检测和运行时编译及优化（JIT），程序性能随运行时间优化&#xA;•&#x9;JVM 运行过程中，会监控哪些代码执行频繁（热点代码）。&#xA;•&#x9;使用 JIT 编译器将热点代码从字节码编译为本地机器码，提高执行速度。&#xA;🔍 为什么这样能提高性能？&#xA;•&#x9;热点代码一旦编译为机器码，执行速度大幅提高。&#xA;•&#x9;JIT 编译还能根据运行时数据做优化（如内联、逃逸分析、去锁）。&#xA;4.&#x9;拥有完善的 API 体系与强大生态&#xA;•&#x9;Java 官方提供广泛的标准库（集合、IO、并发、网络等）。&#xA;•&#x9;社区支持丰富：Guava、Apache Commons、Spring、Hibernate 等。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

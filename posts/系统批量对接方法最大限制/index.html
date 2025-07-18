@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>系统批量对接放开最大限制 | 日拱一卒，Done is better than perfect</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="
+一、项目现状分析
+
+  
+      
+          项目
+          内容
+      
+  
+  
+      
+          生产环境
+          8G 单实例服务器，（cpu 可扩展）
+      
+      
+          当前处理限制
+          前端限制 Excel 最多 20 个产品，后端同步处理
+      
+      
+          处理逻辑
+          Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库
+      
+      
+          痛点
+          &gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)
+      
+  
+
+
+二、需求形成
+831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品">
+    <meta name="generator" content="Hugo 0.147.8">
+    
+    
+    
+      <meta name="robots" content="index, follow">
+    
+    <meta name="author" content="尹绍钧">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.8d048772ae72ab11245a0e296d1f2a36d3e3dd376c6c867394d6cc659c68fc37.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/">
+    
+
+    <meta property="og:url" content="https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="系统批量对接放开最大限制">
+  <meta property="og:description" content="一、项目现状分析 项目 内容 生产环境 8G 单实例服务器，（cpu 可扩展） 当前处理限制 前端限制 Excel 最多 20 个产品，后端同步处理 处理逻辑 Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库 痛点 &gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s) 二、需求形成 831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-18T10:09:28+08:00">
+    <meta property="article:modified_time" content="2025-07-18T10:09:28+08:00">
+
+  <meta itemprop="name" content="系统批量对接放开最大限制">
+  <meta itemprop="description" content="一、项目现状分析 项目 内容 生产环境 8G 单实例服务器，（cpu 可扩展） 当前处理限制 前端限制 Excel 最多 20 个产品，后端同步处理 处理逻辑 Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库 痛点 &gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s) 二、需求形成 831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品">
+  <meta itemprop="datePublished" content="2025-07-18T10:09:28+08:00">
+  <meta itemprop="dateModified" content="2025-07-18T10:09:28+08:00">
+  <meta itemprop="wordCount" content="561">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="系统批量对接放开最大限制">
+  <meta name="twitter:description" content="一、项目现状分析 项目 内容 生产环境 8G 单实例服务器，（cpu 可扩展） 当前处理限制 前端限制 Excel 最多 20 个产品，后端同步处理 处理逻辑 Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库 痛点 &gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s) 二、需求形成 831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品">
+
+      
+    
+	
+  </head><body class="ma0 avenir bg-near-white production">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-white">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        日拱一卒，Done is better than perfect
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/" title="首页 页">
+              首页
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/posts/" title="归档 页">
+              归档
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/about/" title="关于 页">
+              关于
+            </a>
+          </li>
+          
+        </ul>
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Posts
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">系统批量对接放开最大限制</h1>
+      
+      <p class="tracked"><strong>尹绍钧</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2025-07-18T10:09:28+08:00">七月 18, 2025</time>
+      
+
+      
+      
+        <span class="f6 mv4 dib tracked"> -  </span>
+        <span class="f6 mv4 dib tracked"> -  </span>
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links #333 pr4-l w-two-thirds-l"><h2></h2>
+<h3 id="一项目现状分析"><strong>一、项目现状分析</strong></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>项目</strong></th>
+          <th><strong>内容</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>生产环境</td>
+          <td>8G 单实例服务器，（cpu 可扩展）</td>
+      </tr>
+      <tr>
+          <td>当前处理限制</td>
+          <td>前端限制 Excel 最多 20 个产品，后端同步处理</td>
+      </tr>
+      <tr>
+          <td>处理逻辑</td>
+          <td>Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库</td>
+      </tr>
+      <tr>
+          <td>痛点</td>
+          <td>&gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="二需求形成"><strong>二、需求形成</strong></h3>
+<p>831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品</p>
+<ul>
+<li>
+<p>支持 Excel 中大量产品上传，不再限制数量</p>
+</li>
+<li>
+<p>前端提交后不等待处理，返回 taskId</p>
+</li>
+<li>
+<p>能看到处理进度、失败原因</p>
+</li>
+<li>
+<p>处理完通知创建人进入下一步操作</p>
+</li>
+<li>
+<p>尽量将校验提前至填写阶段，若用户数据填写错误，需支持错误信息回显、修正重试</p>
+</li>
+</ul>
+<hr>
+<h3 id="三方案设计plantuml图示"><strong>三、方案设计（PlantUML图示）</strong></h3>
+<h4 id="无需等待的接口处理流程"><strong>无需等待的接口处理流程</strong></h4>
+<p><img src="/img/DD17AF7E-986C-4D6F-A6EA-E44728B43150.png" alt=""></p>
+<hr>
+<h3 id="四完整技术方案"><strong>四、完整技术方案</strong></h3>
+<h4 id="数据表-async_"><strong>【数据表】 async_task + async_task_error</strong></h4>
+<pre tabindex="0"><code>CREATE TABLE async_task (
+  task_id VARCHAR(64) PRIMARY KEY,
+  user_id VARCHAR(64),
+  status VARCHAR(20),
+  progress INT,
+  message TEXT,
+  result_json TEXT,
+  created_time DATETIME,
+  updated_time DATETIME
+);
+
+CREATE TABLE async_task_error (
+  task_id VARCHAR(64),
+  row_index INT,
+  sale_product_name VARCHAR(128),
+  error_msg TEXT
+);
+</code></pre><h4 id="后端设计"><strong>【后端设计】</strong></h4>
+<ul>
+<li>
+<p>新增 TaskService</p>
+<ul>
+<li>
+<p>create(taskId, userId)</p>
+</li>
+<li>
+<p>updateProgress(taskId, percent)</p>
+</li>
+<li>
+<p>complete(taskId, success|fail, result)</p>
+</li>
+<li>
+<p>appendError(taskId, rowIndex, message)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Controller</p>
+<ul>
+<li>
+<p>原 save() 改为 createTask()</p>
+</li>
+<li>
+<p>新增 queryProgress(taskId)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>异步执行 Executor</p>
+<ul>
+<li>
+<p>调用原 batchCopyChannelProduct()</p>
+</li>
+<li>
+<p>每条 try-catch，错误写入 async_task_error</p>
+</li>
+<li>
+<p>成功失败分别记录，任务总体状态保持</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="前端设计"><strong>【前端设计】</strong></h4>
+<ul>
+<li>
+<p>Excel 上传后显示 “任务已提交 taskId: xxx”</p>
+</li>
+<li>
+<p>提供 taskId 进度查看 UI（轮询 / 按钮）</p>
+</li>
+<li>
+<p>处理完成后显示“创建成功”+失败行导出（Excel）+继续操作</p>
+</li>
+</ul>
+<hr>
+<h3 id="五如果不改代码怎样评估最大处理能力"><strong>五、如果不改代码怎样评估最大处理能力？</strong></h3>
+<h4 id="方案手动压测--jvm-监控"><strong>方案：手动压测 + JVM 监控</strong></h4>
+<ul>
+<li>
+<p>递增 Excel 产品数量：20/40/60/80/100</p>
+</li>
+<li>
+<p>观察故障：</p>
+<ul>
+<li>
+<p>是否超过前端 timeout</p>
+</li>
+<li>
+<p>CPU 是否 100%</p>
+</li>
+<li>
+<p>GC 是否频繁（用 jstat -gc 查看）</p>
+</li>
+</ul>
+</li>
+<li>
+<p>结论：</p>
+<ul>
+<li>大概未经优化情况下，（数量）产品之后超时风险极高</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-white bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="https://yinshaojun001.github.io/" >
+    &copy;  日拱一卒，Done is better than perfect 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

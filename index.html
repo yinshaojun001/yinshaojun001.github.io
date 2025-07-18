@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>日拱一卒，Done is better than perfect</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Done is better than perfect">
+    <meta name="generator" content="Hugo 0.147.8">
+    
+    
+    
+      <meta name="robots" content="index, follow">
+    
+    <meta name="author" content="尹绍钧">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.8d048772ae72ab11245a0e296d1f2a36d3e3dd376c6c867394d6cc659c68fc37.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/index.xml" rel="alternate" type="application/rss+xml" title="日拱一卒，Done is better than perfect" />
+      <link href="/index.xml" rel="feed" type="application/rss+xml" title="日拱一卒，Done is better than perfect" />
+      
+    
+
+    
+      <link rel="canonical" href="https://yinshaojun001.github.io/">
+    
+
+    <meta property="og:url" content="https://yinshaojun001.github.io/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="日拱一卒，Done is better than perfect">
+  <meta property="og:description" content="Done is better than perfect">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="日拱一卒，Done is better than perfect">
+  <meta itemprop="description" content="Done is better than perfect">
+  <meta itemprop="datePublished" content="2025-07-18T10:09:28+08:00">
+  <meta itemprop="dateModified" content="2025-07-18T10:09:28+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="日拱一卒，Done is better than perfect">
+  <meta name="twitter:description" content="Done is better than perfect">
+
+      
+    
+	
+  </head><body class="ma0 avenir bg-near-white production">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-white">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        日拱一卒，Done is better than perfect
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/" title="首页 页">
+              首页
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/posts/" title="归档 页">
+              归档
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/about/" title="关于 页">
+              关于
+            </a>
+          </li>
+          
+        </ul>
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          日拱一卒，Done is better than perfect
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy nested-links #333">
+    
+  </article>
+
+  
+  
+  
+  
+  
+
+  
+    <div class="pa3 pa4-ns w-100 w-70-ns center">
+      
+
+      <section class="w-100 mw8">
+        
+        
+          <div class="w-100 mb4 relative">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l dark-gray no-underline">
+    <div class="flex-column flex-row-ns flex">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/" class="color-inherit dim link">
+            系统批量对接放开最大限制
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          <h2></h2>
+<h3 id="一项目现状分析"><strong>一、项目现状分析</strong></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>项目</strong></th>
+          <th><strong>内容</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>生产环境</td>
+          <td>8G 单实例服务器，（cpu 可扩展）</td>
+      </tr>
+      <tr>
+          <td>当前处理限制</td>
+          <td>前端限制 Excel 最多 20 个产品，后端同步处理</td>
+      </tr>
+      <tr>
+          <td>处理逻辑</td>
+          <td>Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库</td>
+      </tr>
+      <tr>
+          <td>痛点</td>
+          <td>&gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="二需求形成"><strong>二、需求形成</strong></h3>
+<p>831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品</p>
+        </div>
+        
+          <p class="f6 lh-copy mv0">By 尹绍钧</p><a href="/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">继续阅读</a>
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+          <div class="w-100 mb4 relative">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l dark-gray no-underline">
+    <div class="flex-column flex-row-ns flex">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/posts/%E6%8D%8B%E4%B8%80%E4%B8%8Bjmm/" class="color-inherit dim link">
+            捋一下JMM
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          <h1 id="java-memory-modeljmm与-jvm-运行时内存区域详解">Java Memory Model（JMM）与 JVM 运行时内存区域详解</h1>
+<h2 id="一java-memory-modeljmm概述">一、Java Memory Model（JMM）概述</h2>
+<p>JMM（Java Memory Model）是 Java 虚拟机规范中定义的<strong>线程之间如何共享变量</strong>的一种抽象模型，用于屏蔽各种硬件和操作系统内存访问差异，确保多线程程序在不同平台下都能实现一致的内存语义。</p>
+        </div>
+        
+          <p class="f6 lh-copy mv0">By 尹绍钧</p><a href="/posts/%E6%8D%8B%E4%B8%80%E4%B8%8Bjmm/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">继续阅读</a>
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+          <div class="w-100 mb4 relative">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l dark-gray no-underline">
+    <div class="flex-column flex-row-ns flex">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/" class="color-inherit dim link">
+            记一次问题梳理思路
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          <h2 id="situation背景"><strong>（Situation）背景</strong></h2>
+<p>在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望<strong>一次批量操作上百甚至上千个产品</strong>。但我们发现，在和流程引擎联动进行批量任务时，<strong>系统出现了数据库连接池耗尽、发布失败的问题</strong>，影响了用户体验并造成流程失败。</p>
+        </div>
+        
+          <p class="f6 lh-copy mv0">By 尹绍钧</p><a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">继续阅读</a>
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+      </section>
+
+      
+        <section class="w-100">
+          <h1 class="f3">更多</h1>
+          
+          
+            <h2 class="f5 fw4 mb4 dib mr3">
+              <a href="/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/" class="link black dim">
+                Arthas初始用
+              </a>
+            </h2>
+          
+            <h2 class="f5 fw4 mb4 dib mr3">
+              <a href="/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/" class="link black dim">
+                多线程CompletableFuture 和 parallelStream使用
+              </a>
+            </h2>
+          
+            <h2 class="f5 fw4 mb4 dib mr3">
+              <a href="/posts/mysql_%E4%BA%8B%E5%8A%A1%E4%B8%8Emvcc%E8%A1%8C%E4%B8%BA%E8%AF%A6%E8%A7%A3/" class="link black dim">
+                MySQL_事务与MVCC行为详解
+              </a>
+            </h2>
+          
+            <h2 class="f5 fw4 mb4 dib mr3">
+              <a href="/posts/my-first-post/" class="link black dim">
+                深入理解 Java 虚拟机 - 学习笔记整理（基于《深入理解Java虚拟机》）--01
+              </a>
+            </h2>
+          
+        </section>
+      
+
+    </div>
+  
+
+    </main>
+    <footer class="bg-white bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="https://yinshaojun001.github.io/" >
+    &copy;  日拱一卒，Done is better than perfect 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

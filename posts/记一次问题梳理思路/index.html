@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>记一次问题梳理思路 | 日拱一卒，Done is better than perfect</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="（Situation）背景
+在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望一次批量操作上百甚至上千个产品。但我们发现，在和流程引擎联动进行批量任务时，系统出现了数据库连接池耗尽、发布失败的问题，影响了用户体验并造成流程失败。">
+    <meta name="generator" content="Hugo 0.147.8">
+    
+    
+    
+      <meta name="robots" content="index, follow">
+    
+    <meta name="author" content="尹绍钧">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.8d048772ae72ab11245a0e296d1f2a36d3e3dd376c6c867394d6cc659c68fc37.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://yinshaojun001.github.io/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/">
+    
+
+    <meta property="og:url" content="https://yinshaojun001.github.io/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="记一次问题梳理思路">
+  <meta property="og:description" content="（Situation）背景 在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望一次批量操作上百甚至上千个产品。但我们发现，在和流程引擎联动进行批量任务时，系统出现了数据库连接池耗尽、发布失败的问题，影响了用户体验并造成流程失败。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-11T08:51:56+08:00">
+    <meta property="article:modified_time" content="2025-07-11T08:51:56+08:00">
+
+  <meta itemprop="name" content="记一次问题梳理思路">
+  <meta itemprop="description" content="（Situation）背景 在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望一次批量操作上百甚至上千个产品。但我们发现，在和流程引擎联动进行批量任务时，系统出现了数据库连接池耗尽、发布失败的问题，影响了用户体验并造成流程失败。">
+  <meta itemprop="datePublished" content="2025-07-11T08:51:56+08:00">
+  <meta itemprop="dateModified" content="2025-07-11T08:51:56+08:00">
+  <meta itemprop="wordCount" content="1221">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="记一次问题梳理思路">
+  <meta name="twitter:description" content="（Situation）背景 在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望一次批量操作上百甚至上千个产品。但我们发现，在和流程引擎联动进行批量任务时，系统出现了数据库连接池耗尽、发布失败的问题，影响了用户体验并造成流程失败。">
+
+      
+    
+	
+  </head><body class="ma0 avenir bg-near-white production">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-white">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        日拱一卒，Done is better than perfect
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/" title="首页 页">
+              首页
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/posts/" title="归档 页">
+              归档
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white white-90 no-underline" href="/about/" title="关于 页">
+              关于
+            </a>
+          </li>
+          
+        </ul>
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Posts
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">记一次问题梳理思路</h1>
+      
+      <p class="tracked"><strong>尹绍钧</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2025-07-11T08:51:56+08:00">七月 11, 2025</time>
+      
+
+      
+      
+        <span class="f6 mv4 dib tracked"> -  </span>
+        <span class="f6 mv4 dib tracked"> -  </span>
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links #333 pr4-l w-two-thirds-l"><h2 id="situation背景"><strong>（Situation）背景</strong></h2>
+<p>在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望<strong>一次批量操作上百甚至上千个产品</strong>。但我们发现，在和流程引擎联动进行批量任务时，<strong>系统出现了数据库连接池耗尽、发布失败的问题</strong>，影响了用户体验并造成流程失败。</p>
+<h2 id="一后台系统-与-流程引擎的系统交互梳理"><strong>一、后台系统 与 流程引擎的系统交互梳理</strong></h2>
+<h3 id="11-系统关系概述"><strong>1.1 系统关系概述</strong></h3>
+<ul>
+<li>
+<p><strong>flowable</strong>（流程引擎）：负责流程任务调度、任务变量传递、打包发布、同步执行控制。</p>
+</li>
+<li>
+<p><strong>后端系统</strong>（配置系统）：接收 流程 调用，实现渠道产品的配置、复制等逻辑。</p>
+</li>
+</ul>
+<h3 id="12-实际调用关系梳理"><strong>1.2 实际调用关系梳理</strong></h3>
+<p><img src="/img/53FCBC52-02C4-450E-8E17-8A75A3B692E5.png" alt=""></p>
+<h3 id="13-调用模式确认"><strong>1.3 调用模式确认</strong></h3>
+<ul>
+<li>
+<p>✅ <strong>流程引擎 是串行调用 后台 接口的</strong>：每个产品单独发起一次调用，等待 IAC 响应后再处理下一个。</p>
+</li>
+<li>
+<p>⚠️ <strong>系统 内部存在并发处理问题</strong>：使用了 parallelStream / CompletableFuture 一次性并发处理全部产品，容易压垮连接池。</p>
+</li>
+</ul>
+<h2 id="ttask任务目标"><strong>T（Task）任务目标</strong></h2>
+<ul>
+<li>
+<p><strong>分析问题根源</strong>：找出为什么批量处理会失败。</p>
+</li>
+<li>
+<p><strong>设计优化方案</strong>：在不影响流程引擎调用逻辑的前提下，实现大规模产品对接的能力。</p>
+</li>
+<li>
+<p><strong>最终目标</strong>：支持上千产品的稳定对接，并提升系统性能与可维护性。</p>
+</li>
+</ul>
+<h2 id="二存在问题分析"><strong>二、存在问题分析</strong></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>问题点</strong></th>
+          <th><strong>描述</strong></th>
+          <th><strong>风险</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>❌ 系统并发处理产品</td>
+          <td><strong>柳成荫串行调用 后端系统</strong>，但 后端系统 内部存在 <strong>并发处理多个产品的逻辑</strong>（如 parallelStream / CompletableFuture）</td>
+          <td>导致一个流程调用同时处理几十个产品，占满连接池，数据库连接池耗尽，接口阻塞</td>
+      </tr>
+      <tr>
+          <td>❌ 无事务优化</td>
+          <td>每个产品涉及 27 次数据库操作</td>
+          <td>无批处理，事务控制不统一</td>
+      </tr>
+      <tr>
+          <td>❌ 无任务状态跟踪</td>
+          <td>用户感知不到处理进度</td>
+          <td>可观测性差，无法失败重试</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="aaction采取的行动"><strong>A（Action）采取的行动</strong></h2>
+<h2 id="三整改优化基于-流程引擎-串行调用"><strong>三、整改优化（基于 流程引擎 串行调用）</strong></h2>
+<h3 id="31-后端系统-优化重点"><strong>3.1 后端系统 优化（重点）</strong></h3>
+<h4 id="-代码层优化"><strong>✅ 代码层优化</strong></h4>
+<ul>
+<li>移除 parallelStream / CompletableFuture 的全量并发处理</li>
+<li>每次只处理当前这个产品，不在 IAC 内部并发多个产品</li>
+</ul>
+<h4 id="-数据层优化"><strong>✅ 数据层优化</strong></h4>
+<ul>
+<li>涉及 27 张表的读写
+每个产品在 copy 时会操作多个表：渠道产品表、展示信息表、扩展配置表&hellip;..and so on</li>
+<li>多表写入统一事务，避免碎片化连接调用</li>
+</ul>
+<h4 id="-耗时监控"><strong>✅ 耗时监控</strong></h4>
+<ul>
+<li>增加日志记录每个产品处理耗时，用于后续定位瓶颈</li>
+</ul>
+<h2 id="qa">Q&amp;A</h2>
+<blockquote>
+<p><strong>Q1：为什么现在有连接耗尽问题？</strong></p></blockquote>
+<blockquote>
+<p>后端 内部对 流程引擎 发起的单个调用，错误地并发处理了全部产品，导致连接池耗尽。</p></blockquote>
+<blockquote>
+<p><strong>Q2：为什么不是 流程引擎 的问题？</strong></p></blockquote>
+<blockquote>
+<p>后端系统 是串行执行，每个产品逐个调用 后端系统 并等待完成，没有并发行为。</p></blockquote>
+<blockquote>
+<p><strong>Q3：那应该怎么改？</strong></p></blockquote>
+<blockquote>
+<p>保证每次调用只处理一个产品，移除并发逻辑，提升单次处理性能，配合数据库批处理优化。</p></blockquote>
+<blockquote>
+<p><strong>Q4：是否可以无上限处理？</strong></p></blockquote>
+<blockquote>
+<p>理论上可以，串行处理只需保证单次产品处理性能足够，系统资源充足即可；但建议仍设上限以避免极端数据导致接口处理超时。如果一次批量修改产品过多，需等待时间稍长，但是一个产品 处理2-3s 也不慢了。</p></blockquote>
+<h2 id="rresult成果效果"><strong>R（Result）成果效果</strong></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>指标/结果</strong></th>
+          <th><strong>优化前</strong></th>
+          <th><strong>优化后</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>接口并发量</td>
+          <td>全部产品同时执行</td>
+          <td>每次只处理 1 个产品</td>
+      </tr>
+      <tr>
+          <td>数据库连接</td>
+          <td>耗尽/阻塞</td>
+          <td>连接池保持正常</td>
+      </tr>
+      <tr>
+          <td>流程打包耗时</td>
+          <td>超时/失败</td>
+          <td>稳定处理，串行打包每个产品</td>
+      </tr>
+      <tr>
+          <td>系统稳定性</td>
+          <td>存在雪崩风险</td>
+          <td>明显提升，任务顺利推进</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="经验成长"><strong>经验成长</strong></h3>
+<ul>
+<li>
+<p>更清晰理解 <strong>调用链责任边界</strong>：流程引擎 负责流程调度，后端系统 专注单产品处理；</p>
+</li>
+<li>
+<p>提升了对 <strong>连接池/事务/线程池资源消耗</strong> 的认知；</p>
+</li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-white bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="https://yinshaojun001.github.io/" >
+    &copy;  日拱一卒，Done is better than perfect 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
