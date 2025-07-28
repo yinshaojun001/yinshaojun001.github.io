@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Performance | 日拱一卒，Done is better than perfect</title>
+<meta name="keywords" content="">
+<meta name="description" content="📘 性能与负载 入门名词描述
+
+“没有解决方案，只有利弊权衡。尽你所能获取最好的利弊权衡，这是你唯一能指望的事。”
+——《DDIA》
+
+🧩 一、什么是负载（Load）
+📌 定义
+负载 = 系统正在承受的压力，可以通过多个维度的指标来描述。">
+<meta name="author" content="尹绍钧">
+<link rel="canonical" href="https://yinshaojun001.github.io/posts/performance/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yinshaojun001.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yinshaojun001.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yinshaojun001.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yinshaojun001.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yinshaojun001.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://yinshaojun001.github.io/posts/performance/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yinshaojun001.github.io/posts/performance/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="Performance">
+  <meta property="og:description" content="📘 性能与负载 入门名词描述 “没有解决方案，只有利弊权衡。尽你所能获取最好的利弊权衡，这是你唯一能指望的事。”
+——《DDIA》
+🧩 一、什么是负载（Load） 📌 定义 负载 = 系统正在承受的压力，可以通过多个维度的指标来描述。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-28T11:36:08+08:00">
+    <meta property="article:modified_time" content="2025-07-28T11:36:08+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Performance">
+<meta name="twitter:description" content="📘 性能与负载 入门名词描述
+
+“没有解决方案，只有利弊权衡。尽你所能获取最好的利弊权衡，这是你唯一能指望的事。”
+——《DDIA》
+
+🧩 一、什么是负载（Load）
+📌 定义
+负载 = 系统正在承受的压力，可以通过多个维度的指标来描述。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yinshaojun001.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Performance",
+      "item": "https://yinshaojun001.github.io/posts/performance/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Performance",
+  "name": "Performance",
+  "description": "📘 性能与负载 入门名词描述 “没有解决方案，只有利弊权衡。尽你所能获取最好的利弊权衡，这是你唯一能指望的事。”\n——《DDIA》\n🧩 一、什么是负载（Load） 📌 定义 负载 = 系统正在承受的压力，可以通过多个维度的指标来描述。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "📘 性能与负载 入门名词描述 “没有解决方案，只有利弊权衡。尽你所能获取最好的利弊权衡，这是你唯一能指望的事。”\n——《DDIA》\n🧩 一、什么是负载（Load） 📌 定义 负载 = 系统正在承受的压力，可以通过多个维度的指标来描述。\n用途：监控系统瓶颈 / 评估是否需要扩容 / 优化调度资源 🧮 常见负载指标 类型 指标 描述 Web 服务 QPS（每秒请求数） 测量并发请求处理能力 数据库 TPS（每秒事务数） 事务处理能力，包括多步 SQL 操作 内存 已用内存 / 可用内存 / 使用率 判断内存是否吃紧 Linux 系统 Load Average（1/5/15分钟） 平均运行队列长度，不是 CPU 使用率 📌 系统负载 != CPU 使用率！\nLoadAvg 是“等待 CPU 调度的进程数（Runnable + Running）”\n🔢 一、QPS 和 TPS 的区别与联系 🧠 基本定义 指标 全称 含义 应用场景 QPS Queries Per Second 每秒处理的查询请求数 Web 服务、接口调用 TPS Transactions Per Second 每秒处理的完整事务数 数据库、支付、下单等事务性服务 📌 举例区分 场景1：Web 服务 一个电商网站：\n每秒收到 10000 个用户请求\n都是类似 GET /product/123\n✅ 这里就是 QPS = 10000（高并发读请求）\n场景2：数据库服务 一个用户下单流程：\n下单接口执行 1 次\n这个接口背后执行了 5 条 SQL（查库存、扣库存、写订单、写流水、写用户操作）\n✅ 一个“下单事务” = 多个 SQL 查询\n所以：\nQPS（N * TPS） = 5000\nTPS（下单事务数） = 1000\n✅ 总结区别 项目 QPS TPS 粒度 单个查询（如 SQL 或接口） 一个完整事务（可包含多个操作） 描述 并发处理能力 原子操作能力 场景 Web 接口、Redis、MySQL 查询 支付系统、订单、银行交易 📌 TPS 更适合描述事务系统的处理能力（如支付、订单），QPS 更常用于接口服务和缓存系统。\n📊 二、P99 / P999 / P95 的含义 📌 定义：百分位响应时间指标（Percentiles） 用来描述 延迟 / 响应时间的分布情况，比平均值更能反映“极端情况”。\n例如：P99 就是第 99% 个请求所用的耗时。假如 P99 现在是 10ms, 那么我们可以说 “99% 的请求都在 10ms 内完成”。虽然在一些请求量较小的情况下，P99 可能受长尾请求的影响。但是由于 SRE 一般不会给在量小的业务上花费太多精力，所以这个问题并不是很大。\n指标 含义 P50 中位数：一半请求耗时比它低，一半比它高 P95 95% 的请求响应时间 ≤ 该值 P99 99% 的请求响应时间 ≤ 该值 P999 99.9% 的请求响应时间 ≤ 该值（极端尾部响应） 🔍 举例说明 假设你统计了 10000 个请求响应时间：\nP50 = 100ms → 有 5000 个请求耗时 ≤ 100ms\nP95 = 200ms → 有 9500 个请求耗时 ≤ 200ms\nP99 = 500ms → 有 9900 个请求耗时 ≤ 500ms\nP999 = 1000ms → 有 9990 个请求耗时 ≤ 1000ms，只有 10 个 \u003e 1000ms\n🚨 为什么不用平均值（Average）？ 平均值会被“极端慢请求”影响，看不出长尾风险。\n示例数据：[50ms, 60ms, 55ms, 12000ms]\n平均值 = 3025ms ❌ → 完全不符合大多数请求的真实情况\nP95 = 60ms ✅ → 95% 都非常快\n只有极个别请求“拖后腿”，这才是你要关注的 P99 / P999\n🧯 实战意义 百分位 用途 关注点 P50 系统常态表现 用户平均体验 P95 看临近瓶颈前状态 高峰期参考 P99 / P999 尾部请求监控 长尾、慢查询、GC、队头阻塞 ✅ 总结一图流 |------P50---------P95-------P99-----------P999-----------\u003e | 常规请求 稍慢 慢请求 极慢请求 | 快速路径 网络抖动 GC/锁/IO 超长队列阻塞 📎 最佳实践建议 类别 建议 接口监控 一定要记录：P50 / P95 / P99 / 最大响应时间 Web 服务 用 QPS + P99 评估稳定性 数据库 用 TPS + P99 评估峰值事务处理能力 SLA 一般要求 “P99 ≤ 100ms，99.9% 可用” 压测 用 P95/P99 判断系统“压力临界点” ⚙️ 二、如何描述性能（Performance） 📌 定义 性能 = 在当前负载下，系统的响应能力 + 资源利用率\n性能指标帮助我们量化“服务好不好用”。\n🚀 1. 吞吐量（Throughput） 定义：单位时间系统处理请求数（QPS / TPS） 关注点：系统最大处理能力 📌 适用场景： 场景 吞吐量指标 Web 服务 QPS 数据库事务 TPS 消息队列 / 日志系统 每秒写入记录数 ⏱️ 2. 延迟与响应时间（Latency / Response Time） 📌 基本概念 项目 含义 延迟（Latency） 请求在服务端被处理的时间 响应时间（Response Time） 客户端看到的总耗时 = 延迟 + 排队时间 + 网络时间 🚨 延迟来源 服务处理时间慢（业务慢 / 下游慢） 排队等待（连接池满、线程池打满） 网络波动（RTT抖动、丢包） GC 暂停（STW） I/O 磁盘写慢 📊 延迟度量方式 平均值：容易被极端值掩盖 ❌ P99、P95、P50（中位数）：反映不同程度的请求耗时 ✅ 🏷️ 举例： P99 = 120ms → 说明 99% 的请求小于 120ms，1% 的请求 ≥ 120ms ⚠️ 注意“长尾延迟”： 慢请求集中影响系统 队头阻塞：有限线程并行，长请求拖慢短请求 🤝 SLA 与 SLO 项目 含义 SLA 服务级别协议（企业间签订）Service Level Agreement 服务水平协议 SLO 服务级别目标（内部制定） Service Level Object 服务水平目标 SLI 服务级别指标（如 P99 ≤ 100ms）Service Level Indicator 服务水平指示器 常见 SLA 示例：\n可用性 ≥ 99.9%（月宕机时间 ≤ 43.2分钟） P99 响应时间 ≤ 100ms 恢复时间 ≤ 5 分钟 🔗 三、指标关系与公式 🔁 三者关系公式 平均并发数 ≈ 吞吐量 × 平均响应时间 📌 举例：\n每秒处理 1000 请求（QPS） 平均响应时间 200ms = 0.2 秒 平均并发 ≈ 1000 × 0.2 = 200 🔧 四、排查与调优实战 🧐 问题排查流程 ❓ 高并发场景下系统响应慢，但 CPU/内存正常，该怎么查？\n1. 判断症状： 是所有接口慢？还是某类请求？ 是平均响应时间升高，还是 P99/P95 升高？ 2. 排查方向： 排查项 举例说明 下游慢 SQL 慢查询、Redis 超时、外部 HTTP 慢 排队阻塞 DB连接池耗尽、线程池阻塞、异步队列积压 热点锁竞争 同步锁 / Redis分布式锁导致串行化 网络问题 跨区调用 / 网络抖动 / DNS 延迟 GC 抖动 Full GC 频繁，或 STW 超长 3. 辅助工具： 工具 功能 链路追踪 (Jaeger / Skywalking) 查看请求耗时分布 pprof(go) / arthas 查看线程 / 堆栈 / 锁竞争状态 Prometheus / Grafana 可视化吞吐、延迟、内存等指标 🏗️ 五、系统设计视角下的性能保障 🎯 设计高并发、高吞吐接口的原则 📦 拆分架构 读写分离 / 拆服务 / 拆库分表 / 分区分片 ⚡ 缓存加速 Caffeine / Redis / 本地缓存 防穿透 / 击穿 / 雪崩处理 💥 限流降级 漏桶 / 令牌桶 / Sentinel 接口降级默认返回 / 超时熔断 🔁 异步削峰 消息队列缓冲（Kafka / RocketMQ） 支付下单先入队，后续异步处理 🧰 并发控制 增大连接池 / goroutine 控制 避免请求堆积 / 调整队列大小 📚 六、术语速查表 名词 含义 QPS 每秒请求数（Query Per Second） TPS 每秒事务数（Transaction Per Second） P99 99% 请求响应时间 SLA 服务等级协议 SLO 服务等级目标 SLI 服务等级指标 并发数 系统同时处理的请求数 吞吐量 每秒可处理多少请求 响应时间 请求从发起到返回的总耗时 延迟 服务端处理请求所耗时间 📖 推荐读物 《Designing Data-Intensive Applications》📘 DDIA 《系统性能：企业与云计算视角》Brendan Gregg 《Site Reliability Engineering》SRE 团队指南 ✅ 总结与建议 性能问题没有绝对值，关键在于定位瓶颈、合理权衡资源与用户体验 学会用指标说话，从数据中发现性能问题根因 把握三个核心维度：吞吐、延迟、并发 面试/实战场景中注重：性能压测 + 调优措施 + 架构设计能力 ",
+  "wordCount" : "2702",
+  "inLanguage": "zh",
+  "datePublished": "2025-07-28T11:36:08+08:00",
+  "dateModified": "2025-07-28T11:36:08+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "尹绍钧"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yinshaojun001.github.io/posts/performance/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "日拱一卒，Done is better than perfect",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yinshaojun001.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yinshaojun001.github.io/" accesskey="h" title="日拱一卒，Done is better than perfect (Alt + H)">日拱一卒，Done is better than perfect</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yinshaojun001.github.io/" title="首页">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/posts/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Performance
+    </h1>
+    <div class="post-meta"><span title='2025-07-28 11:36:08 +0800 CST'>七月 28, 2025</span>&nbsp;·&nbsp;尹绍钧
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="-性能与负载-入门名词描述">📘 性能与负载 入门名词描述<a hidden class="anchor" aria-hidden="true" href="#-性能与负载-入门名词描述">#</a></h1>
+<blockquote>
+<p><em>“没有解决方案，只有利弊权衡。尽你所能获取最好的利弊权衡，这是你唯一能指望的事。”</em><br>
+——《DDIA》</p></blockquote>
+<hr>
+<h2 id="-一什么是负载load">🧩 一、什么是负载（Load）<a hidden class="anchor" aria-hidden="true" href="#-一什么是负载load">#</a></h2>
+<h3 id="-定义">📌 定义<a hidden class="anchor" aria-hidden="true" href="#-定义">#</a></h3>
+<p><strong>负载 = 系统正在承受的压力</strong>，可以通过多个维度的指标来描述。</p>
+<ul>
+<li>用途：<strong>监控系统瓶颈 / 评估是否需要扩容 / 优化调度资源</strong></li>
+</ul>
+<hr>
+<h3 id="-常见负载指标">🧮 常见负载指标<a hidden class="anchor" aria-hidden="true" href="#-常见负载指标">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>类型</th>
+          <th>指标</th>
+          <th>描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Web 服务</td>
+          <td>QPS（每秒请求数）</td>
+          <td>测量并发请求处理能力</td>
+      </tr>
+      <tr>
+          <td>数据库</td>
+          <td>TPS（每秒事务数）</td>
+          <td>事务处理能力，包括多步 SQL 操作</td>
+      </tr>
+      <tr>
+          <td>内存</td>
+          <td>已用内存 / 可用内存 / 使用率</td>
+          <td>判断内存是否吃紧</td>
+      </tr>
+      <tr>
+          <td>Linux 系统</td>
+          <td>Load Average（1/5/15分钟）</td>
+          <td>平均运行队列长度，不是 CPU 使用率</td>
+      </tr>
+  </tbody>
+</table>
+<p>📌 <strong>系统负载 != CPU 使用率！</strong></p>
+<blockquote>
+<p>LoadAvg 是“等待 CPU 调度的进程数（Runnable + Running）”</p></blockquote>
+<hr>
+<h3 id="-一qps-和-tps-的区别与联系"><strong>🔢 一、QPS 和 TPS 的区别与联系</strong><a hidden class="anchor" aria-hidden="true" href="#-一qps-和-tps-的区别与联系">#</a></h3>
+<h3 id="-基本定义"><strong>🧠 基本定义</strong><a hidden class="anchor" aria-hidden="true" href="#-基本定义">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>指标</strong></th>
+          <th><strong>全称</strong></th>
+          <th><strong>含义</strong></th>
+          <th><strong>应用场景</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>QPS</td>
+          <td><strong>Queries Per Second</strong></td>
+          <td>每秒处理的查询请求数</td>
+          <td>Web 服务、接口调用</td>
+      </tr>
+      <tr>
+          <td>TPS</td>
+          <td><strong>Transactions Per Second</strong></td>
+          <td>每秒处理的<strong>完整事务</strong>数</td>
+          <td>数据库、支付、下单等事务性服务</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="-举例区分"><strong>📌 举例区分</strong><a hidden class="anchor" aria-hidden="true" href="#-举例区分">#</a></h3>
+<h4 id="场景1web-服务"><strong>场景1：Web 服务</strong><a hidden class="anchor" aria-hidden="true" href="#场景1web-服务">#</a></h4>
+<p>一个电商网站：</p>
+<ul>
+<li>
+<p>每秒收到 10000 个用户请求</p>
+</li>
+<li>
+<p>都是类似 GET /product/123</p>
+<p>✅ 这里就是 QPS = 10000（高并发读请求）</p>
+</li>
+</ul>
+<h4 id="场景2数据库服务"><strong>场景2：数据库服务</strong><a hidden class="anchor" aria-hidden="true" href="#场景2数据库服务">#</a></h4>
+<p>一个用户下单流程：</p>
+<ul>
+<li>
+<p>下单接口执行 1 次</p>
+</li>
+<li>
+<p>这个接口背后执行了 5 条 SQL（查库存、扣库存、写订单、写流水、写用户操作）</p>
+</li>
+</ul>
+<blockquote>
+<p>✅ 一个“下单事务” = 多个 SQL 查询</p></blockquote>
+<blockquote>
+<p>所以：</p></blockquote>
+<ul>
+<li>
+<blockquote>
+<p>QPS（N * TPS） = 5000</p></blockquote>
+</li>
+<li>
+<blockquote>
+<p>TPS（下单事务数） = 1000</p></blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="-总结区别"><strong>✅ 总结区别</strong><a hidden class="anchor" aria-hidden="true" href="#-总结区别">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>项目</strong></th>
+          <th><strong>QPS</strong></th>
+          <th><strong>TPS</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>粒度</td>
+          <td>单个查询（如 SQL 或接口）</td>
+          <td>一个完整事务（可包含多个操作）</td>
+      </tr>
+      <tr>
+          <td>描述</td>
+          <td>并发处理能力</td>
+          <td>原子操作能力</td>
+      </tr>
+      <tr>
+          <td>场景</td>
+          <td>Web 接口、Redis、MySQL 查询</td>
+          <td>支付系统、订单、银行交易</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>📌 <strong>TPS 更适合描述事务系统的处理能力（如支付、订单），QPS 更常用于接口服务和缓存系统。</strong></p></blockquote>
+<hr>
+<h3 id="-二p99--p999--p95-的含义"><strong>📊 二、P99 / P999 / P95 的含义</strong><a hidden class="anchor" aria-hidden="true" href="#-二p99--p999--p95-的含义">#</a></h3>
+<h3 id="-定义百分位响应时间指标percentiles"><strong>📌 定义：百分位响应时间指标（Percentiles）</strong><a hidden class="anchor" aria-hidden="true" href="#-定义百分位响应时间指标percentiles">#</a></h3>
+<p>用来描述 <strong>延迟 / 响应时间的分布情况</strong>，比平均值更能反映“极端情况”。</p>
+<p>例如：P99 就是第 99% 个请求所用的耗时。假如 P99 现在是 10ms, 那么我们可以说 “99% 的请求都在 10ms 内完成”。虽然在一些请求量较小的情况下，<a href="http://accelazh.github.io/storage/Tail-Latency-Study">P99 可能受长尾请求的影响</a>。但是由于 SRE 一般不会给在量小的业务上花费太多精力，所以这个问题并不是很大。</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>指标</strong></th>
+          <th><strong>含义</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>P50</strong></td>
+          <td>中位数：一半请求耗时比它低，一半比它高</td>
+      </tr>
+      <tr>
+          <td><strong>P95</strong></td>
+          <td>95% 的请求响应时间 ≤ 该值</td>
+      </tr>
+      <tr>
+          <td><strong>P99</strong></td>
+          <td>99% 的请求响应时间 ≤ 该值</td>
+      </tr>
+      <tr>
+          <td><strong>P999</strong></td>
+          <td>99.9% 的请求响应时间 ≤ 该值（极端尾部响应）</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="-举例说明"><strong>🔍 举例说明</strong><a hidden class="anchor" aria-hidden="true" href="#-举例说明">#</a></h3>
+<p>假设你统计了 10000 个请求响应时间：</p>
+<ul>
+<li>
+<p>P50 = 100ms → 有 5000 个请求耗时 ≤ 100ms</p>
+</li>
+<li>
+<p>P95 = 200ms → 有 9500 个请求耗时 ≤ 200ms</p>
+</li>
+<li>
+<p>P99 = 500ms → 有 9900 个请求耗时 ≤ 500ms</p>
+</li>
+<li>
+<p>P999 = 1000ms → 有 9990 个请求耗时 ≤ 1000ms，只有 10 个 &gt; 1000ms</p>
+</li>
+</ul>
+<hr>
+<h3 id="-为什么不用平均值average"><strong>🚨 为什么不用平均值（Average）？</strong><a hidden class="anchor" aria-hidden="true" href="#-为什么不用平均值average">#</a></h3>
+<p>平均值会被“极端慢请求”影响，看不出长尾风险。</p>
+<ul>
+<li>
+<p>示例数据：[50ms, 60ms, 55ms, 12000ms]</p>
+</li>
+<li>
+<p>平均值 = 3025ms ❌ → 完全不符合大多数请求的真实情况</p>
+</li>
+<li>
+<p>P95 = 60ms ✅ → 95% 都非常快</p>
+</li>
+<li>
+<p>只有极个别请求“拖后腿”，这才是你要关注的 P99 / P999</p>
+</li>
+</ul>
+<hr>
+<h3 id="-实战意义"><strong>🧯 实战意义</strong><a hidden class="anchor" aria-hidden="true" href="#-实战意义">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>百分位</strong></th>
+          <th><strong>用途</strong></th>
+          <th><strong>关注点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>P50</td>
+          <td>系统常态表现</td>
+          <td>用户平均体验</td>
+      </tr>
+      <tr>
+          <td>P95</td>
+          <td>看临近瓶颈前状态</td>
+          <td>高峰期参考</td>
+      </tr>
+      <tr>
+          <td>P99 / P999</td>
+          <td>尾部请求监控</td>
+          <td>长尾、慢查询、GC、队头阻塞</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="-总结一图流"><strong>✅ 总结一图流</strong><a hidden class="anchor" aria-hidden="true" href="#-总结一图流">#</a></h3>
+<pre tabindex="0"><code>|------P50---------P95-------P99-----------P999-----------&gt;
+|     常规请求      稍慢       慢请求         极慢请求
+|     快速路径      网络抖动    GC/锁/IO      超长队列阻塞
+</code></pre><hr>
+<h2 id="-最佳实践建议"><strong>📎 最佳实践建议</strong><a hidden class="anchor" aria-hidden="true" href="#-最佳实践建议">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>类别</strong></th>
+          <th><strong>建议</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>接口监控</td>
+          <td>一定要记录：P50 / P95 / P99 / 最大响应时间</td>
+      </tr>
+      <tr>
+          <td>Web 服务</td>
+          <td>用 QPS + P99 评估稳定性</td>
+      </tr>
+      <tr>
+          <td>数据库</td>
+          <td>用 TPS + P99 评估峰值事务处理能力</td>
+      </tr>
+      <tr>
+          <td>SLA</td>
+          <td>一般要求 “P99 ≤ 100ms，99.9% 可用”</td>
+      </tr>
+      <tr>
+          <td>压测</td>
+          <td>用 P95/P99 判断系统“压力临界点”</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-二如何描述性能performance">⚙️ 二、如何描述性能（Performance）<a hidden class="anchor" aria-hidden="true" href="#-二如何描述性能performance">#</a></h2>
+<h3 id="-定义-1">📌 定义<a hidden class="anchor" aria-hidden="true" href="#-定义-1">#</a></h3>
+<p><strong>性能</strong> = 在当前负载下，系统的响应能力 + 资源利用率<br>
+性能指标帮助我们量化“服务好不好用”。</p>
+<hr>
+<h3 id="-1-吞吐量throughput">🚀 1. 吞吐量（Throughput）<a hidden class="anchor" aria-hidden="true" href="#-1-吞吐量throughput">#</a></h3>
+<ul>
+<li><strong>定义</strong>：单位时间系统处理请求数（QPS / TPS）</li>
+<li><strong>关注点</strong>：系统最大处理能力</li>
+</ul>
+<h4 id="-适用场景">📌 适用场景：<a hidden class="anchor" aria-hidden="true" href="#-适用场景">#</a></h4>
+<table>
+  <thead>
+      <tr>
+          <th>场景</th>
+          <th>吞吐量指标</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Web 服务</td>
+          <td>QPS</td>
+      </tr>
+      <tr>
+          <td>数据库事务</td>
+          <td>TPS</td>
+      </tr>
+      <tr>
+          <td>消息队列 / 日志系统</td>
+          <td>每秒写入记录数</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="-2-延迟与响应时间latency--response-time">⏱️ 2. 延迟与响应时间（Latency / Response Time）<a hidden class="anchor" aria-hidden="true" href="#-2-延迟与响应时间latency--response-time">#</a></h3>
+<h4 id="-基本概念">📌 基本概念<a hidden class="anchor" aria-hidden="true" href="#-基本概念">#</a></h4>
+<table>
+  <thead>
+      <tr>
+          <th>项目</th>
+          <th>含义</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>延迟（Latency）</td>
+          <td>请求在服务端被处理的时间</td>
+      </tr>
+      <tr>
+          <td>响应时间（Response Time）</td>
+          <td>客户端看到的总耗时 = 延迟 + 排队时间 + 网络时间</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="-延迟来源">🚨 延迟来源<a hidden class="anchor" aria-hidden="true" href="#-延迟来源">#</a></h4>
+<ul>
+<li>服务处理时间慢（业务慢 / 下游慢）</li>
+<li>排队等待（连接池满、线程池打满）</li>
+<li>网络波动（RTT抖动、丢包）</li>
+<li>GC 暂停（STW）</li>
+<li>I/O 磁盘写慢</li>
+</ul>
+<hr>
+<h3 id="-延迟度量方式">📊 延迟度量方式<a hidden class="anchor" aria-hidden="true" href="#-延迟度量方式">#</a></h3>
+<ul>
+<li>平均值：容易被极端值掩盖 ❌</li>
+<li><strong>P99、P95、P50（中位数）</strong>：反映不同程度的请求耗时 ✅</li>
+</ul>
+<h4 id="-举例">🏷️ 举例：<a hidden class="anchor" aria-hidden="true" href="#-举例">#</a></h4>
+<ul>
+<li>P99 = 120ms → 说明 99% 的请求小于 120ms，1% 的请求 ≥ 120ms</li>
+</ul>
+<h4 id="-注意长尾延迟">⚠️ 注意“长尾延迟”：<a hidden class="anchor" aria-hidden="true" href="#-注意长尾延迟">#</a></h4>
+<ul>
+<li>慢请求集中影响系统</li>
+<li>队头阻塞：有限线程并行，长请求拖慢短请求</li>
+</ul>
+<hr>
+<h3 id="-sla-与-slo">🤝 SLA 与 SLO<a hidden class="anchor" aria-hidden="true" href="#-sla-与-slo">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>项目</th>
+          <th>含义</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>SLA</td>
+          <td>服务级别协议（企业间签订）Service Level Agreement 服务水平协议</td>
+      </tr>
+      <tr>
+          <td>SLO</td>
+          <td>服务级别目标（内部制定） Service Level Object 服务水平目标</td>
+      </tr>
+      <tr>
+          <td>SLI</td>
+          <td>服务级别指标（如 P99 ≤ 100ms）Service Level Indicator 服务水平指示器</td>
+      </tr>
+  </tbody>
+</table>
+<p>常见 SLA 示例：</p>
+<ul>
+<li>可用性 ≥ 99.9%（月宕机时间 ≤ 43.2分钟）</li>
+<li>P99 响应时间 ≤ 100ms</li>
+<li>恢复时间 ≤ 5 分钟</li>
+</ul>
+<hr>
+<h2 id="-三指标关系与公式">🔗 三、指标关系与公式<a hidden class="anchor" aria-hidden="true" href="#-三指标关系与公式">#</a></h2>
+<h3 id="-三者关系公式">🔁 三者关系公式<a hidden class="anchor" aria-hidden="true" href="#-三者关系公式">#</a></h3>
+<pre tabindex="0"><code>平均并发数 ≈ 吞吐量 × 平均响应时间
+</code></pre><p>📌 举例：</p>
+<ul>
+<li>每秒处理 1000 请求（QPS）</li>
+<li>平均响应时间 200ms = 0.2 秒</li>
+<li>平均并发 ≈ 1000 × 0.2 = 200</li>
+</ul>
+<hr>
+<h2 id="-四排查与调优实战">🔧 四、排查与调优实战<a hidden class="anchor" aria-hidden="true" href="#-四排查与调优实战">#</a></h2>
+<h3 id="-问题排查流程">🧐 问题排查流程<a hidden class="anchor" aria-hidden="true" href="#-问题排查流程">#</a></h3>
+<blockquote>
+<p>❓ 高并发场景下系统响应慢，但 CPU/内存正常，该怎么查？</p></blockquote>
+<h4 id="1-判断症状">1. <strong>判断症状</strong>：<a hidden class="anchor" aria-hidden="true" href="#1-判断症状">#</a></h4>
+<ul>
+<li>是所有接口慢？还是某类请求？</li>
+<li>是平均响应时间升高，还是 P99/P95 升高？</li>
+</ul>
+<h4 id="2-排查方向">2. <strong>排查方向</strong>：<a hidden class="anchor" aria-hidden="true" href="#2-排查方向">#</a></h4>
+<table>
+  <thead>
+      <tr>
+          <th>排查项</th>
+          <th>举例说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>下游慢</td>
+          <td>SQL 慢查询、Redis 超时、外部 HTTP 慢</td>
+      </tr>
+      <tr>
+          <td>排队阻塞</td>
+          <td>DB连接池耗尽、线程池阻塞、异步队列积压</td>
+      </tr>
+      <tr>
+          <td>热点锁竞争</td>
+          <td>同步锁 / Redis分布式锁导致串行化</td>
+      </tr>
+      <tr>
+          <td>网络问题</td>
+          <td>跨区调用 / 网络抖动 / DNS 延迟</td>
+      </tr>
+      <tr>
+          <td>GC 抖动</td>
+          <td>Full GC 频繁，或 STW 超长</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="3-辅助工具">3. <strong>辅助工具</strong>：<a hidden class="anchor" aria-hidden="true" href="#3-辅助工具">#</a></h4>
+<table>
+  <thead>
+      <tr>
+          <th>工具</th>
+          <th>功能</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>链路追踪 (Jaeger / Skywalking)</td>
+          <td>查看请求耗时分布</td>
+      </tr>
+      <tr>
+          <td>pprof(go) / arthas</td>
+          <td>查看线程 / 堆栈 / 锁竞争状态</td>
+      </tr>
+      <tr>
+          <td>Prometheus / Grafana</td>
+          <td>可视化吞吐、延迟、内存等指标</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-五系统设计视角下的性能保障">🏗️ 五、系统设计视角下的性能保障<a hidden class="anchor" aria-hidden="true" href="#-五系统设计视角下的性能保障">#</a></h2>
+<h3 id="-设计高并发高吞吐接口的原则">🎯 设计高并发、高吞吐接口的原则<a hidden class="anchor" aria-hidden="true" href="#-设计高并发高吞吐接口的原则">#</a></h3>
+<h4 id="-拆分架构">📦 拆分架构<a hidden class="anchor" aria-hidden="true" href="#-拆分架构">#</a></h4>
+<ul>
+<li>读写分离 / 拆服务 / 拆库分表 / 分区分片</li>
+</ul>
+<h4 id="-缓存加速">⚡ 缓存加速<a hidden class="anchor" aria-hidden="true" href="#-缓存加速">#</a></h4>
+<ul>
+<li>Caffeine / Redis / 本地缓存</li>
+<li>防穿透 / 击穿 / 雪崩处理</li>
+</ul>
+<h4 id="-限流降级">💥 限流降级<a hidden class="anchor" aria-hidden="true" href="#-限流降级">#</a></h4>
+<ul>
+<li>漏桶 / 令牌桶 / Sentinel</li>
+<li>接口降级默认返回 / 超时熔断</li>
+</ul>
+<h4 id="-异步削峰">🔁 异步削峰<a hidden class="anchor" aria-hidden="true" href="#-异步削峰">#</a></h4>
+<ul>
+<li>消息队列缓冲（Kafka / RocketMQ）</li>
+<li>支付下单先入队，后续异步处理</li>
+</ul>
+<h4 id="-并发控制">🧰 并发控制<a hidden class="anchor" aria-hidden="true" href="#-并发控制">#</a></h4>
+<ul>
+<li>增大连接池 / goroutine 控制</li>
+<li>避免请求堆积 / 调整队列大小</li>
+</ul>
+<hr>
+<h2 id="-六术语速查表">📚 六、术语速查表<a hidden class="anchor" aria-hidden="true" href="#-六术语速查表">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th>名词</th>
+          <th>含义</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>QPS</td>
+          <td>每秒请求数（Query Per Second）</td>
+      </tr>
+      <tr>
+          <td>TPS</td>
+          <td>每秒事务数（Transaction Per Second）</td>
+      </tr>
+      <tr>
+          <td>P99</td>
+          <td>99% 请求响应时间</td>
+      </tr>
+      <tr>
+          <td>SLA</td>
+          <td>服务等级协议</td>
+      </tr>
+      <tr>
+          <td>SLO</td>
+          <td>服务等级目标</td>
+      </tr>
+      <tr>
+          <td>SLI</td>
+          <td>服务等级指标</td>
+      </tr>
+      <tr>
+          <td>并发数</td>
+          <td>系统同时处理的请求数</td>
+      </tr>
+      <tr>
+          <td>吞吐量</td>
+          <td>每秒可处理多少请求</td>
+      </tr>
+      <tr>
+          <td>响应时间</td>
+          <td>请求从发起到返回的总耗时</td>
+      </tr>
+      <tr>
+          <td>延迟</td>
+          <td>服务端处理请求所耗时间</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-推荐读物">📖 推荐读物<a hidden class="anchor" aria-hidden="true" href="#-推荐读物">#</a></h2>
+<ul>
+<li>《Designing Data-Intensive Applications》📘  DDIA</li>
+<li>《系统性能：企业与云计算视角》Brendan Gregg</li>
+<li>《Site Reliability Engineering》SRE 团队指南</li>
+</ul>
+<hr>
+<h2 id="-总结与建议">✅ 总结与建议<a hidden class="anchor" aria-hidden="true" href="#-总结与建议">#</a></h2>
+<ul>
+<li>性能问题没有绝对值，关键在于<strong>定位瓶颈、合理权衡资源与用户体验</strong></li>
+<li>学会<strong>用指标说话</strong>，从数据中发现性能问题根因</li>
+<li>把握三个核心维度：<strong>吞吐、延迟、并发</strong></li>
+<li>面试/实战场景中注重：<strong>性能压测 + 调优措施 + 架构设计能力</strong></li>
+</ul>
+<hr>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yinshaojun001.github.io/">日拱一卒，Done is better than perfect</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

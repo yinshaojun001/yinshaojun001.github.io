@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Arthas初始用 | 日拱一卒，Done is better than perfect</title>
+<meta name="keywords" content="">
+<meta name="description" content="在服务器中使用
+一行命令快速启动
+curl -O https://arthas.aliyun.com/arthas-boot.jar &amp;&amp; java -jar arthas-boot.jar
+使用 arthas 查看是否存在某个类:
+sc -d 全限定类名
+sc -d com.xxx.demo.service.UserService
+这条命令的含义是：查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）。">
+<meta name="author" content="尹绍钧">
+<link rel="canonical" href="https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yinshaojun001.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yinshaojun001.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yinshaojun001.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yinshaojun001.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yinshaojun001.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="Arthas初始用">
+  <meta property="og:description" content="在服务器中使用
+一行命令快速启动 curl -O https://arthas.aliyun.com/arthas-boot.jar &amp;&amp; java -jar arthas-boot.jar 使用 arthas 查看是否存在某个类: sc -d 全限定类名 sc -d com.xxx.demo.service.UserService 这条命令的含义是：查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-07T17:56:54+08:00">
+    <meta property="article:modified_time" content="2025-07-07T17:56:54+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Arthas初始用">
+<meta name="twitter:description" content="在服务器中使用
+一行命令快速启动
+curl -O https://arthas.aliyun.com/arthas-boot.jar &amp;&amp; java -jar arthas-boot.jar
+使用 arthas 查看是否存在某个类:
+sc -d 全限定类名
+sc -d com.xxx.demo.service.UserService
+这条命令的含义是：查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yinshaojun001.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Arthas初始用",
+      "item": "https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Arthas初始用",
+  "name": "Arthas初始用",
+  "description": "在服务器中使用\n一行命令快速启动 curl -O https://arthas.aliyun.com/arthas-boot.jar \u0026amp;\u0026amp; java -jar arthas-boot.jar 使用 arthas 查看是否存在某个类: sc -d 全限定类名 sc -d com.xxx.demo.service.UserService 这条命令的含义是：查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "在服务器中使用\n一行命令快速启动 curl -O https://arthas.aliyun.com/arthas-boot.jar \u0026\u0026 java -jar arthas-boot.jar 使用 arthas 查看是否存在某个类: sc -d 全限定类名 sc -d com.xxx.demo.service.UserService 这条命令的含义是：查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）。\nsc: search class，查询类加载器中加载的类。\n-d: 输出详细信息（如类加载器、代码来源 JAR 路径等）。\n[arthas@16]$ sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService class-info com.iac.cpp.config.flow.deploy.DemandManageDeployService code-source file:/home/admin/release/new/iac-executable.jar!/BOOT-INF/lib/iac-cpp-config-1.0-SNAPSHOT.jar!/ name com.iac.cpp.config.flow.deploy.DemandManageDeployService isInterface false isAnnotation false isEnum false isAnonymousClass false isArray false isLocalClass false isMemberClass false isPrimitive false isSynthetic false simple-name DemandManageDeployService modifier public annotation org.springframework.stereotype.Service interfaces super-class +-com.trustlife.common.config.deploy.BaseConfDeployService +-java.lang.Object class-loader +-org.springframework.boot.loader.LaunchedURLClassLoader@6b884d57 +-sun.misc.Launcher$AppClassLoader@70dea4e +-sun.misc.Launcher$ExtClassLoader@78411116 classLoaderHash 6b884d57 Affect(row-cnt:1) cost in 334 ms. 这句 Arthas 命令：\nsc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService 的作用是：查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）。\n✅ 解析结果详解： [arthas@16]$ sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService 你执行了查询这个类是否被加载。\n✅ 找到了目标类： class-info com.iac.cpp.config.flow.deploy.DemandManageDeployService 说明类已经被加载进 JVM。\n✅ 类的来源： code-source file:/home/admin/release/new/iac-executable.jar!/BOOT-INF/lib/iac-cpp-config-1.0-SNAPSHOT.jar!/ 这个类是从 iac-executable.jar 包中的 iac-cpp-config-1.0-SNAPSHOT.jar 这个内嵌 JAR 里加载出来的。\n这常见于 Spring Boot fat jar（可执行 JAR） 打包方式。\n✅ 类的结构信息： name com.iac.cpp.config.flow.deploy.DemandManageDeployService isInterface false isAnnotation false isEnum false isAnonymousClass false isArray false isLocalClass false isMemberClass false isPrimitive false isSynthetic false 这些表示它是一个正常的 Java 类，不是接口、注解、枚举或匿名类。\n✅ 类修饰信息： simple-name DemandManageDeployService modifier public 这是一个 public 修饰的类。\n✅ 注解信息： annotation org.springframework.stereotype.Service 它被 @Service 注解，说明这是一个 Spring 容器中的服务类。\n✅ 实现结构（继承链）： super-class +-com.trustlife.common.config.deploy.BaseConfDeployService +-java.lang.Object 说明它是继承自一个自定义父类 BaseConfDeployService。\n✅ 类加载器信息： class-loader +-org.springframework.boot.loader.LaunchedURLClassLoader@6b884d57 +-sun.misc.Launcher$AppClassLoader@70dea4e +-sun.misc.Launcher$ExtClassLoader@78411116 classLoaderHash 6b884d57 说明这个类是被 Spring Boot 特有的类加载器加载的，即 LaunchedURLClassLoader，并且类加载器 hash 是 6b884d57。\n这个信息对于你在 Arthas 中执行如 jad、watch、monitor、tt 命令非常重要，因为有些命令需要你提供 –classLoaderHash 来锁定类加载器。\n✅ 结尾提示： Affect(row-cnt:1) cost in 334 ms. 表示这个命令查到了 1 个类，耗时 334 毫秒。\n✅ 后续你可以干嘛？ 你现在知道类已加载，可以做这些操作：\n目标 命令 查看源码 jad com.iac.cpp.config.flow.deploy.DemandManageDeployService 查看某方法调用参数 watch com.iac.cpp.config.flow.deploy.DemandManageDeployService 方法名 ‘{params, returnObj}’ 跟踪方法执行路径 trace com.iac.cpp.config.flow.deploy.DemandManageDeployService 方法名 查看方法执行时间 monitor com.iac.cpp.config.flow.deploy.DemandManageDeployService 方法名 执行 OGNL ognl ‘@com.iac.cpp.config.flow.deploy.DemandManageDeployService@yourStaticMethod()’（如果是静态方法） ",
+  "wordCount" : "844",
+  "inLanguage": "zh",
+  "datePublished": "2025-07-07T17:56:54+08:00",
+  "dateModified": "2025-07-07T17:56:54+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "尹绍钧"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "日拱一卒，Done is better than perfect",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yinshaojun001.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yinshaojun001.github.io/" accesskey="h" title="日拱一卒，Done is better than perfect (Alt + H)">日拱一卒，Done is better than perfect</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yinshaojun001.github.io/" title="首页">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/posts/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Arthas初始用
+    </h1>
+    <div class="post-meta"><span title='2025-07-07 17:56:54 +0800 CST'>七月 7, 2025</span>&nbsp;·&nbsp;尹绍钧
+
+</div>
+  </header> 
+  <div class="post-content"><p>在服务器中使用</p>
+<h2 id="一行命令快速启动"><strong>一行命令快速启动</strong><a hidden class="anchor" aria-hidden="true" href="#一行命令快速启动">#</a></h2>
+<pre tabindex="0"><code>curl -O https://arthas.aliyun.com/arthas-boot.jar &amp;&amp; java -jar arthas-boot.jar
+</code></pre><p>使用 arthas 查看是否存在某个类:
+sc -d 全限定类名
+sc -d com.xxx.demo.service.UserService
+这条命令的含义是：<strong>查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）</strong>。</p>
+<ul>
+<li>
+<p>sc: search class，查询类加载器中加载的类。</p>
+</li>
+<li>
+<p>-d: 输出详细信息（如类加载器、代码来源 JAR 路径等）。</p>
+</li>
+</ul>
+<pre tabindex="0"><code>[arthas@16]$ sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService
+
+ class-info        com.iac.cpp.config.flow.deploy.DemandManageDeployService
+
+ code-source       file:/home/admin/release/new/iac-executable.jar!/BOOT-INF/lib/iac-cpp-config-1.0-SNAPSHOT.jar!/
+
+ name              com.iac.cpp.config.flow.deploy.DemandManageDeployService
+
+ isInterface       false
+
+ isAnnotation      false
+
+ isEnum            false
+
+ isAnonymousClass  false
+
+ isArray           false
+
+ isLocalClass      false
+
+ isMemberClass     false
+
+ isPrimitive       false
+
+ isSynthetic       false
+
+ simple-name       DemandManageDeployService
+
+ modifier          public
+
+ annotation        org.springframework.stereotype.Service
+
+ interfaces
+
+ super-class       +-com.trustlife.common.config.deploy.BaseConfDeployService
+
+                     +-java.lang.Object
+
+ class-loader      +-org.springframework.boot.loader.LaunchedURLClassLoader@6b884d57
+
+                     +-sun.misc.Launcher$AppClassLoader@70dea4e
+
+                       +-sun.misc.Launcher$ExtClassLoader@78411116
+
+ classLoaderHash   6b884d57
+
+  
+
+Affect(row-cnt:1) cost in 334 ms.
+</code></pre><p>这句 Arthas 命令：</p>
+<pre tabindex="0"><code>sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService
+</code></pre><p>的作用是：<strong>查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）</strong>。</p>
+<hr>
+<h2 id="-解析结果详解"><strong>✅ 解析结果详解：</strong><a hidden class="anchor" aria-hidden="true" href="#-解析结果详解">#</a></h2>
+<pre tabindex="0"><code>[arthas@16]$ sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService
+</code></pre><p>你执行了查询这个类是否被加载。</p>
+<hr>
+<h3 id="-找到了目标类"><strong>✅ 找到了目标类：</strong><a hidden class="anchor" aria-hidden="true" href="#-找到了目标类">#</a></h3>
+<pre tabindex="0"><code>class-info        com.iac.cpp.config.flow.deploy.DemandManageDeployService
+</code></pre><p>说明类已经被加载进 JVM。</p>
+<hr>
+<h3 id="-类的来源"><strong>✅ 类的来源：</strong><a hidden class="anchor" aria-hidden="true" href="#-类的来源">#</a></h3>
+<pre tabindex="0"><code>code-source       file:/home/admin/release/new/iac-executable.jar!/BOOT-INF/lib/iac-cpp-config-1.0-SNAPSHOT.jar!/
+</code></pre><p>这个类是从 iac-executable.jar 包中的 iac-cpp-config-1.0-SNAPSHOT.jar 这个内嵌 JAR 里加载出来的。</p>
+<p>这常见于 <strong>Spring Boot fat jar（可执行 JAR）</strong> 打包方式。</p>
+<hr>
+<h3 id="-类的结构信息"><strong>✅ 类的结构信息：</strong><a hidden class="anchor" aria-hidden="true" href="#-类的结构信息">#</a></h3>
+<pre tabindex="0"><code>name              com.iac.cpp.config.flow.deploy.DemandManageDeployService
+isInterface       false
+isAnnotation      false
+isEnum            false
+isAnonymousClass  false
+isArray           false
+isLocalClass      false
+isMemberClass     false
+isPrimitive       false
+isSynthetic       false
+</code></pre><p>这些表示它是一个正常的 Java 类，不是接口、注解、枚举或匿名类。</p>
+<hr>
+<h3 id="-类修饰信息"><strong>✅ 类修饰信息：</strong><a hidden class="anchor" aria-hidden="true" href="#-类修饰信息">#</a></h3>
+<pre tabindex="0"><code>simple-name       DemandManageDeployService
+modifier          public
+</code></pre><p>这是一个 public 修饰的类。</p>
+<hr>
+<h3 id="-注解信息"><strong>✅ 注解信息：</strong><a hidden class="anchor" aria-hidden="true" href="#-注解信息">#</a></h3>
+<pre tabindex="0"><code>annotation        org.springframework.stereotype.Service
+</code></pre><p>它被 @Service 注解，说明这是一个 Spring 容器中的服务类。</p>
+<hr>
+<h3 id="-实现结构继承链"><strong>✅ 实现结构（继承链）：</strong><a hidden class="anchor" aria-hidden="true" href="#-实现结构继承链">#</a></h3>
+<pre tabindex="0"><code>super-class       +-com.trustlife.common.config.deploy.BaseConfDeployService
+                     +-java.lang.Object
+</code></pre><p>说明它是继承自一个自定义父类 BaseConfDeployService。</p>
+<hr>
+<h3 id="-类加载器信息"><strong>✅ 类加载器信息：</strong><a hidden class="anchor" aria-hidden="true" href="#-类加载器信息">#</a></h3>
+<pre tabindex="0"><code>class-loader      +-org.springframework.boot.loader.LaunchedURLClassLoader@6b884d57
+                     +-sun.misc.Launcher$AppClassLoader@70dea4e
+                       +-sun.misc.Launcher$ExtClassLoader@78411116
+classLoaderHash   6b884d57
+</code></pre><p>说明这个类是被 Spring Boot 特有的类加载器加载的，即 LaunchedURLClassLoader，并且类加载器 hash 是 6b884d57。</p>
+<p>这个信息对于你在 Arthas 中执行如 jad、watch、monitor、tt 命令非常重要，因为有些命令需要你提供 &ndash;classLoaderHash 来锁定类加载器。</p>
+<hr>
+<h3 id="-结尾提示"><strong>✅ 结尾提示：</strong><a hidden class="anchor" aria-hidden="true" href="#-结尾提示">#</a></h3>
+<pre tabindex="0"><code>Affect(row-cnt:1) cost in 334 ms.
+</code></pre><p>表示这个命令查到了 <strong>1 个类</strong>，耗时 334 毫秒。</p>
+<hr>
+<h2 id="-后续你可以干嘛"><strong>✅ 后续你可以干嘛？</strong><a hidden class="anchor" aria-hidden="true" href="#-后续你可以干嘛">#</a></h2>
+<p>你现在知道类已加载，可以做这些操作：</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>目标</strong></th>
+          <th><strong>命令</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>查看源码</td>
+          <td>jad com.iac.cpp.config.flow.deploy.DemandManageDeployService</td>
+      </tr>
+      <tr>
+          <td>查看某方法调用参数</td>
+          <td>watch com.iac.cpp.config.flow.deploy.DemandManageDeployService 方法名 &lsquo;{params, returnObj}&rsquo;</td>
+      </tr>
+      <tr>
+          <td>跟踪方法执行路径</td>
+          <td>trace com.iac.cpp.config.flow.deploy.DemandManageDeployService 方法名</td>
+      </tr>
+      <tr>
+          <td>查看方法执行时间</td>
+          <td>monitor com.iac.cpp.config.flow.deploy.DemandManageDeployService 方法名</td>
+      </tr>
+      <tr>
+          <td>执行 OGNL</td>
+          <td>ognl &lsquo;@com.iac.cpp.config.flow.deploy.DemandManageDeployService@yourStaticMethod()&rsquo;（如果是静态方法）</td>
+      </tr>
+  </tbody>
+</table>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yinshaojun001.github.io/">日拱一卒，Done is better than perfect</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
