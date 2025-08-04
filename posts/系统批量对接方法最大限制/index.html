@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>系统批量对接放开最大限制 | 日拱一卒，Done is better than perfect</title>
+<meta name="keywords" content="">
+<meta name="description" content="
+一、项目现状分析
+
+  
+      
+          项目
+          内容
+      
+  
+  
+      
+          生产环境
+          8G 单实例服务器，（cpu 可扩展）
+      
+      
+          当前处理限制
+          前端限制 Excel 最多 20 个产品，后端同步处理
+      
+      
+          处理逻辑
+          Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库
+      
+      
+          痛点
+          &gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)
+      
+  
+
+
+二、需求形成
+831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品">
+<meta name="author" content="尹绍钧">
+<link rel="canonical" href="https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yinshaojun001.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yinshaojun001.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yinshaojun001.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yinshaojun001.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yinshaojun001.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="系统批量对接放开最大限制">
+  <meta property="og:description" content=" 一、项目现状分析 项目 内容 生产环境 8G 单实例服务器，（cpu 可扩展） 当前处理限制 前端限制 Excel 最多 20 个产品，后端同步处理 处理逻辑 Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库 痛点 &gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s) 二、需求形成 831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-18T10:09:28+08:00">
+    <meta property="article:modified_time" content="2025-07-18T10:09:28+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="系统批量对接放开最大限制">
+<meta name="twitter:description" content="
+一、项目现状分析
+
+  
+      
+          项目
+          内容
+      
+  
+  
+      
+          生产环境
+          8G 单实例服务器，（cpu 可扩展）
+      
+      
+          当前处理限制
+          前端限制 Excel 最多 20 个产品，后端同步处理
+      
+      
+          处理逻辑
+          Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库
+      
+      
+          痛点
+          &gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)
+      
+  
+
+
+二、需求形成
+831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yinshaojun001.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "系统批量对接放开最大限制",
+      "item": "https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "系统批量对接放开最大限制",
+  "name": "系统批量对接放开最大限制",
+  "description": " 一、项目现状分析 项目 内容 生产环境 8G 单实例服务器，（cpu 可扩展） 当前处理限制 前端限制 Excel 最多 20 个产品，后端同步处理 处理逻辑 Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库 痛点 \u0026gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s) 二、需求形成 831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品\n",
+  "keywords": [
+    
+  ],
+  "articleBody": " 一、项目现状分析 项目 内容 生产环境 8G 单实例服务器，（cpu 可扩展） 当前处理限制 前端限制 Excel 最多 20 个产品，后端同步处理 处理逻辑 Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库 痛点 \u003e20 条时耗时过长，可能超过前端 timeout 时间 (30s) 二、需求形成 831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品\n支持 Excel 中大量产品上传，不再限制数量\n前端提交后不等待处理，返回 taskId\n能看到处理进度、失败原因\n处理完通知创建人进入下一步操作\n尽量将校验提前至填写阶段，若用户数据填写错误，需支持错误信息回显、修正重试\n三、方案设计（PlantUML图示） 无需等待的接口处理流程 四、完整技术方案 【数据表】 async_task + async_task_error CREATE TABLE async_task ( task_id VARCHAR(64) PRIMARY KEY, user_id VARCHAR(64), status VARCHAR(20), progress INT, message TEXT, result_json TEXT, created_time DATETIME, updated_time DATETIME ); CREATE TABLE async_task_error ( task_id VARCHAR(64), row_index INT, sale_product_name VARCHAR(128), error_msg TEXT ); 【后端设计】 新增 TaskService\ncreate(taskId, userId)\nupdateProgress(taskId, percent)\ncomplete(taskId, success|fail, result)\nappendError(taskId, rowIndex, message)\nController\n原 save() 改为 createTask()\n新增 queryProgress(taskId)\n异步执行 Executor\n调用原 batchCopyChannelProduct()\n每条 try-catch，错误写入 async_task_error\n成功失败分别记录，任务总体状态保持\n【前端设计】 Excel 上传后显示 “任务已提交 taskId: xxx”\n提供 taskId 进度查看 UI（轮询 / 按钮）\n处理完成后显示“创建成功”+失败行导出（Excel）+继续操作\n五、如果不改代码怎样评估最大处理能力？ 方案：手动压测 + JVM 监控 递增 Excel 产品数量：20/40/60/80/100\n观察故障：\n是否超过前端 timeout\nCPU 是否 100%\nGC 是否频繁（用 jstat -gc 查看）\n结论：\n大概未经优化情况下，（数量）产品之后超时风险极高 ",
+  "wordCount" : "561",
+  "inLanguage": "zh",
+  "datePublished": "2025-07-18T10:09:28+08:00",
+  "dateModified": "2025-07-18T10:09:28+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "尹绍钧"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "日拱一卒，Done is better than perfect",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yinshaojun001.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yinshaojun001.github.io/" accesskey="h" title="日拱一卒，Done is better than perfect (Alt + H)">日拱一卒，Done is better than perfect</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yinshaojun001.github.io/" title="首页">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/posts/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      系统批量对接放开最大限制
+    </h1>
+    <div class="post-meta"><span title='2025-07-18 10:09:28 +0800 CST'>七月 18, 2025</span>&nbsp;·&nbsp;尹绍钧
+
+</div>
+  </header> 
+  <div class="post-content"><h2></h2>
+<h3 id="一项目现状分析"><strong>一、项目现状分析</strong><a hidden class="anchor" aria-hidden="true" href="#一项目现状分析">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>项目</strong></th>
+          <th><strong>内容</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>生产环境</td>
+          <td>8G 单实例服务器，（cpu 可扩展）</td>
+      </tr>
+      <tr>
+          <td>当前处理限制</td>
+          <td>前端限制 Excel 最多 20 个产品，后端同步处理</td>
+      </tr>
+      <tr>
+          <td>处理逻辑</td>
+          <td>Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库</td>
+      </tr>
+      <tr>
+          <td>痛点</td>
+          <td>&gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="二需求形成"><strong>二、需求形成</strong><a hidden class="anchor" aria-hidden="true" href="#二需求形成">#</a></h3>
+<p>831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品</p>
+<ul>
+<li>
+<p>支持 Excel 中大量产品上传，不再限制数量</p>
+</li>
+<li>
+<p>前端提交后不等待处理，返回 taskId</p>
+</li>
+<li>
+<p>能看到处理进度、失败原因</p>
+</li>
+<li>
+<p>处理完通知创建人进入下一步操作</p>
+</li>
+<li>
+<p>尽量将校验提前至填写阶段，若用户数据填写错误，需支持错误信息回显、修正重试</p>
+</li>
+</ul>
+<hr>
+<h3 id="三方案设计plantuml图示"><strong>三、方案设计（PlantUML图示）</strong><a hidden class="anchor" aria-hidden="true" href="#三方案设计plantuml图示">#</a></h3>
+<h4 id="无需等待的接口处理流程"><strong>无需等待的接口处理流程</strong><a hidden class="anchor" aria-hidden="true" href="#无需等待的接口处理流程">#</a></h4>
+<p><img loading="lazy" src="/img/DD17AF7E-986C-4D6F-A6EA-E44728B43150.png"></p>
+<hr>
+<h3 id="四完整技术方案"><strong>四、完整技术方案</strong><a hidden class="anchor" aria-hidden="true" href="#四完整技术方案">#</a></h3>
+<h4 id="数据表-async_"><strong>【数据表】 async_task + async_task_error</strong><a hidden class="anchor" aria-hidden="true" href="#数据表-async_">#</a></h4>
+<pre tabindex="0"><code>CREATE TABLE async_task (
+  task_id VARCHAR(64) PRIMARY KEY,
+  user_id VARCHAR(64),
+  status VARCHAR(20),
+  progress INT,
+  message TEXT,
+  result_json TEXT,
+  created_time DATETIME,
+  updated_time DATETIME
+);
+
+CREATE TABLE async_task_error (
+  task_id VARCHAR(64),
+  row_index INT,
+  sale_product_name VARCHAR(128),
+  error_msg TEXT
+);
+</code></pre><h4 id="后端设计"><strong>【后端设计】</strong><a hidden class="anchor" aria-hidden="true" href="#后端设计">#</a></h4>
+<ul>
+<li>
+<p>新增 TaskService</p>
+<ul>
+<li>
+<p>create(taskId, userId)</p>
+</li>
+<li>
+<p>updateProgress(taskId, percent)</p>
+</li>
+<li>
+<p>complete(taskId, success|fail, result)</p>
+</li>
+<li>
+<p>appendError(taskId, rowIndex, message)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Controller</p>
+<ul>
+<li>
+<p>原 save() 改为 createTask()</p>
+</li>
+<li>
+<p>新增 queryProgress(taskId)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>异步执行 Executor</p>
+<ul>
+<li>
+<p>调用原 batchCopyChannelProduct()</p>
+</li>
+<li>
+<p>每条 try-catch，错误写入 async_task_error</p>
+</li>
+<li>
+<p>成功失败分别记录，任务总体状态保持</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="前端设计"><strong>【前端设计】</strong><a hidden class="anchor" aria-hidden="true" href="#前端设计">#</a></h4>
+<ul>
+<li>
+<p>Excel 上传后显示 “任务已提交 taskId: xxx”</p>
+</li>
+<li>
+<p>提供 taskId 进度查看 UI（轮询 / 按钮）</p>
+</li>
+<li>
+<p>处理完成后显示“创建成功”+失败行导出（Excel）+继续操作</p>
+</li>
+</ul>
+<hr>
+<h3 id="五如果不改代码怎样评估最大处理能力"><strong>五、如果不改代码怎样评估最大处理能力？</strong><a hidden class="anchor" aria-hidden="true" href="#五如果不改代码怎样评估最大处理能力">#</a></h3>
+<h4 id="方案手动压测--jvm-监控"><strong>方案：手动压测 + JVM 监控</strong><a hidden class="anchor" aria-hidden="true" href="#方案手动压测--jvm-监控">#</a></h4>
+<ul>
+<li>
+<p>递增 Excel 产品数量：20/40/60/80/100</p>
+</li>
+<li>
+<p>观察故障：</p>
+<ul>
+<li>
+<p>是否超过前端 timeout</p>
+</li>
+<li>
+<p>CPU 是否 100%</p>
+</li>
+<li>
+<p>GC 是否频繁（用 jstat -gc 查看）</p>
+</li>
+</ul>
+</li>
+<li>
+<p>结论：</p>
+<ul>
+<li>大概未经优化情况下，（数量）产品之后超时风险极高</li>
+</ul>
+</li>
+</ul>
+<hr>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yinshaojun001.github.io/">日拱一卒，Done is better than perfect</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

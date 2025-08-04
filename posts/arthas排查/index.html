@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Arthas 实战教程：排查 Java 代码执行缓慢问题 | 日拱一卒，Done is better than perfect</title>
+<meta name="keywords" content="">
+<meta name="description" content="
+🎯 排查目标
+定位 Java 应用中 执行缓慢的代码段，找出方法耗时最长的地方，帮助性能优化。
+
+🛠️ 常用命令对比
+
+  
+      
+          命令
+          作用
+          使用场景
+      
+  
+  
+      
+          trace
+          追踪方法内部每一步执行耗时
+          定位慢步骤、方法耗时分布
+      
+      
+          watch
+          观察方法入参、返回值、执行耗时
+          查看调用情况及结果
+      
+      
+          monitor
+          统计方法的 QPS、平均耗时、失败率
+          观察方法整体性能
+      
+      
+          tt
+          方法调用记录快照，可回放
+          精确分析慢调用参数与路径
+      
+      
+          profiler
+          CPU 级别采样，适合查找热点（更底层）
+          大范围性能瓶颈分析（非单方法）
+      
+  
+
+
+🔍 排查流程示例
+Step 1️⃣：用 
+monitor
+ 看哪个方法慢
+monitor -c 5 com.example.service.OrderService placeOrder
+查看最近 5 次调用统计，包含平均耗时（avg-rt）。">
+<meta name="author" content="尹绍钧">
+<link rel="canonical" href="https://yinshaojun001.github.io/posts/arthas%E6%8E%92%E6%9F%A5/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yinshaojun001.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yinshaojun001.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yinshaojun001.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yinshaojun001.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yinshaojun001.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://yinshaojun001.github.io/posts/arthas%E6%8E%92%E6%9F%A5/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yinshaojun001.github.io/posts/arthas%E6%8E%92%E6%9F%A5/">
+  <meta property="og:site_name" content="日拱一卒，Done is better than perfect">
+  <meta property="og:title" content="Arthas 实战教程：排查 Java 代码执行缓慢问题">
+  <meta property="og:description" content=" 🎯 排查目标 定位 Java 应用中 执行缓慢的代码段，找出方法耗时最长的地方，帮助性能优化。
+🛠️ 常用命令对比 命令 作用 使用场景 trace 追踪方法内部每一步执行耗时 定位慢步骤、方法耗时分布 watch 观察方法入参、返回值、执行耗时 查看调用情况及结果 monitor 统计方法的 QPS、平均耗时、失败率 观察方法整体性能 tt 方法调用记录快照，可回放 精确分析慢调用参数与路径 profiler CPU 级别采样，适合查找热点（更底层） 大范围性能瓶颈分析（非单方法） 🔍 排查流程示例 Step 1️⃣：用 monitor 看哪个方法慢 monitor -c 5 com.example.service.OrderService placeOrder 查看最近 5 次调用统计，包含平均耗时（avg-rt）。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-25T17:34:25+08:00">
+    <meta property="article:modified_time" content="2025-07-25T17:34:25+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Arthas 实战教程：排查 Java 代码执行缓慢问题">
+<meta name="twitter:description" content="
+🎯 排查目标
+定位 Java 应用中 执行缓慢的代码段，找出方法耗时最长的地方，帮助性能优化。
+
+🛠️ 常用命令对比
+
+  
+      
+          命令
+          作用
+          使用场景
+      
+  
+  
+      
+          trace
+          追踪方法内部每一步执行耗时
+          定位慢步骤、方法耗时分布
+      
+      
+          watch
+          观察方法入参、返回值、执行耗时
+          查看调用情况及结果
+      
+      
+          monitor
+          统计方法的 QPS、平均耗时、失败率
+          观察方法整体性能
+      
+      
+          tt
+          方法调用记录快照，可回放
+          精确分析慢调用参数与路径
+      
+      
+          profiler
+          CPU 级别采样，适合查找热点（更底层）
+          大范围性能瓶颈分析（非单方法）
+      
+  
+
+
+🔍 排查流程示例
+Step 1️⃣：用 
+monitor
+ 看哪个方法慢
+monitor -c 5 com.example.service.OrderService placeOrder
+查看最近 5 次调用统计，包含平均耗时（avg-rt）。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yinshaojun001.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Arthas 实战教程：排查 Java 代码执行缓慢问题",
+      "item": "https://yinshaojun001.github.io/posts/arthas%E6%8E%92%E6%9F%A5/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Arthas 实战教程：排查 Java 代码执行缓慢问题",
+  "name": "Arthas 实战教程：排查 Java 代码执行缓慢问题",
+  "description": " 🎯 排查目标 定位 Java 应用中 执行缓慢的代码段，找出方法耗时最长的地方，帮助性能优化。\n🛠️ 常用命令对比 命令 作用 使用场景 trace 追踪方法内部每一步执行耗时 定位慢步骤、方法耗时分布 watch 观察方法入参、返回值、执行耗时 查看调用情况及结果 monitor 统计方法的 QPS、平均耗时、失败率 观察方法整体性能 tt 方法调用记录快照，可回放 精确分析慢调用参数与路径 profiler CPU 级别采样，适合查找热点（更底层） 大范围性能瓶颈分析（非单方法） 🔍 排查流程示例 Step 1️⃣：用 monitor 看哪个方法慢 monitor -c 5 com.example.service.OrderService placeOrder 查看最近 5 次调用统计，包含平均耗时（avg-rt）。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": " 🎯 排查目标 定位 Java 应用中 执行缓慢的代码段，找出方法耗时最长的地方，帮助性能优化。\n🛠️ 常用命令对比 命令 作用 使用场景 trace 追踪方法内部每一步执行耗时 定位慢步骤、方法耗时分布 watch 观察方法入参、返回值、执行耗时 查看调用情况及结果 monitor 统计方法的 QPS、平均耗时、失败率 观察方法整体性能 tt 方法调用记录快照，可回放 精确分析慢调用参数与路径 profiler CPU 级别采样，适合查找热点（更底层） 大范围性能瓶颈分析（非单方法） 🔍 排查流程示例 Step 1️⃣：用 monitor 看哪个方法慢 monitor -c 5 com.example.service.OrderService placeOrder 查看最近 5 次调用统计，包含平均耗时（avg-rt）。\nStep 2️⃣：用 trace 看慢在哪一步 trace com.example.service.OrderService placeOrder 输出样例：\n`---[10530ms] OrderService.placeOrder() +---[80% 8424ms] PaymentService.charge() +---[15% 1575ms] InventoryService.check() 🔎 定位 PaymentService.charge() 最慢\nStep 3️⃣：深入 trace 子方法 trace com.example.payment.PaymentService charge 继续分析 charge() 方法中，是否数据库、远程调用、计算等耗时。\nStep 4️⃣：用 watch 看方法入参 + 耗时 watch com.example.payment.PaymentService charge '{params, returnObj, cost}' -x 3 输出：\nparams[0]: Order{id=123} returnObj: Result{success=true} cost: 8423ms 📌 可以结合参数判断哪些订单耗时长。\nStep 5️⃣：只分析慢请求（可选） trace com.example.payment.PaymentService charge '#cost \u003e 1000' 仅显示耗时超过 1 秒的调用。\nStep 6️⃣：使用 tt 回放某次慢调用 tt -t com.example.payment.PaymentService charge tt -l tt -i 1000 tt -w 1000 可以查看参数、返回值、调用堆栈，非常适合深入分析。\n📌 实战技巧总结 场景 工具 / 命令 某个页面或接口响应慢 trace 顶层方法 细查哪个内部方法最耗时 trace 继续深入子方法 看参数和返回值 + 耗时 watch 大量数据时，平均耗时长 monitor 多次慢调用，精确重放分析 tt 不确定代码在哪执行 jad + search-class + sc ✅ 附加命令小抄 # 查找类 sc -d *OrderService # 反编译类 jad com.example.service.OrderService # 查看所有加载类 sc -d # 查看方法耗时排序 profiler start profiler stop 🧠 优化建议方向 是否有慢 SQL：可结合日志、SQL 分析工具查看\n是否重复远程调用：加缓存、聚合请求\n是否线程池/并行未生效：检查线程模型\n是否 GC 频繁：结合 jvm 查看内存情况\n🏁 小结 工具组合 用途 monitor + trace 找慢方法 + 慢步骤 trace + watch 找慢步骤 + 看入参结果 trace + tt 找调用链 + 精准回放 ",
+  "wordCount" : "718",
+  "inLanguage": "zh",
+  "datePublished": "2025-07-25T17:34:25+08:00",
+  "dateModified": "2025-07-25T17:34:25+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "尹绍钧"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yinshaojun001.github.io/posts/arthas%E6%8E%92%E6%9F%A5/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "日拱一卒，Done is better than perfect",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yinshaojun001.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yinshaojun001.github.io/" accesskey="h" title="日拱一卒，Done is better than perfect (Alt + H)">日拱一卒，Done is better than perfect</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yinshaojun001.github.io/" title="首页">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/posts/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yinshaojun001.github.io/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Arthas 实战教程：排查 Java 代码执行缓慢问题
+    </h1>
+    <div class="post-meta"><span title='2025-07-25 17:34:25 +0800 CST'>七月 25, 2025</span>&nbsp;·&nbsp;尹绍钧
+
+</div>
+  </header> 
+  <div class="post-content"><hr>
+<h2 id="-排查目标"><strong>🎯 排查目标</strong><a hidden class="anchor" aria-hidden="true" href="#-排查目标">#</a></h2>
+<p>定位 Java 应用中 <strong>执行缓慢的代码段</strong>，找出方法耗时最长的地方，帮助性能优化。</p>
+<hr>
+<h2 id="-常用命令对比"><strong>🛠️ 常用命令对比</strong><a hidden class="anchor" aria-hidden="true" href="#-常用命令对比">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>命令</strong></th>
+          <th><strong>作用</strong></th>
+          <th><strong>使用场景</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>trace</td>
+          <td>追踪方法内部每一步执行耗时</td>
+          <td>定位慢步骤、方法耗时分布</td>
+      </tr>
+      <tr>
+          <td>watch</td>
+          <td>观察方法入参、返回值、执行耗时</td>
+          <td>查看调用情况及结果</td>
+      </tr>
+      <tr>
+          <td>monitor</td>
+          <td>统计方法的 QPS、平均耗时、失败率</td>
+          <td>观察方法整体性能</td>
+      </tr>
+      <tr>
+          <td>tt</td>
+          <td>方法调用记录快照，可回放</td>
+          <td>精确分析慢调用参数与路径</td>
+      </tr>
+      <tr>
+          <td>profiler</td>
+          <td>CPU 级别采样，适合查找热点（更底层）</td>
+          <td>大范围性能瓶颈分析（非单方法）</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-排查流程示例"><strong>🔍 排查流程示例</strong><a hidden class="anchor" aria-hidden="true" href="#-排查流程示例">#</a></h2>
+<h3 id="step-1用"><strong>Step 1️⃣：用</strong> <a hidden class="anchor" aria-hidden="true" href="#step-1用">#</a></h3>
+<h3 id="monitor"><strong>monitor</strong><a hidden class="anchor" aria-hidden="true" href="#monitor">#</a></h3>
+<h3 id="看哪个方法慢"> <strong>看哪个方法慢</strong><a hidden class="anchor" aria-hidden="true" href="#看哪个方法慢">#</a></h3>
+<pre tabindex="0"><code>monitor -c 5 com.example.service.OrderService placeOrder
+</code></pre><p>查看最近 5 次调用统计，包含平均耗时（avg-rt）。</p>
+<hr>
+<h3 id="step-2用"><strong>Step 2️⃣：用</strong> <a hidden class="anchor" aria-hidden="true" href="#step-2用">#</a></h3>
+<h3 id="trace"><strong>trace</strong><a hidden class="anchor" aria-hidden="true" href="#trace">#</a></h3>
+<h3 id="看慢在哪一步"> <strong>看慢在哪一步</strong><a hidden class="anchor" aria-hidden="true" href="#看慢在哪一步">#</a></h3>
+<pre tabindex="0"><code>trace com.example.service.OrderService placeOrder
+</code></pre><p>输出样例：</p>
+<pre tabindex="0"><code>`---[10530ms] OrderService.placeOrder()
+    +---[80% 8424ms] PaymentService.charge()
+    +---[15% 1575ms] InventoryService.check()
+</code></pre><p>🔎 <strong>定位 PaymentService.charge() 最慢</strong></p>
+<hr>
+<h3 id="step-3深入"><strong>Step 3️⃣：深入</strong> <a hidden class="anchor" aria-hidden="true" href="#step-3深入">#</a></h3>
+<h3 id="trace-1"><strong>trace</strong><a hidden class="anchor" aria-hidden="true" href="#trace-1">#</a></h3>
+<h3 id="子方法"> <strong>子方法</strong><a hidden class="anchor" aria-hidden="true" href="#子方法">#</a></h3>
+<pre tabindex="0"><code>trace com.example.payment.PaymentService charge
+</code></pre><p>继续分析 charge() 方法中，是否数据库、远程调用、计算等耗时。</p>
+<hr>
+<h3 id="step-4用"><strong>Step 4️⃣：用</strong> <a hidden class="anchor" aria-hidden="true" href="#step-4用">#</a></h3>
+<h3 id="watch"><strong>watch</strong><a hidden class="anchor" aria-hidden="true" href="#watch">#</a></h3>
+<h3 id="看方法入参--耗时"> <strong>看方法入参 + 耗时</strong><a hidden class="anchor" aria-hidden="true" href="#看方法入参--耗时">#</a></h3>
+<pre tabindex="0"><code>watch com.example.payment.PaymentService charge &#39;{params, returnObj, cost}&#39; -x 3
+</code></pre><p>输出：</p>
+<pre tabindex="0"><code>params[0]: Order{id=123}
+returnObj: Result{success=true}
+cost: 8423ms
+</code></pre><p>📌 可以结合参数判断哪些订单耗时长。</p>
+<hr>
+<h3 id="step-5只分析慢请求可选"><strong>Step 5️⃣：只分析慢请求（可选）</strong><a hidden class="anchor" aria-hidden="true" href="#step-5只分析慢请求可选">#</a></h3>
+<pre tabindex="0"><code>trace com.example.payment.PaymentService charge &#39;#cost &gt; 1000&#39;
+</code></pre><p>仅显示耗时超过 1 秒的调用。</p>
+<hr>
+<h3 id="step-6使用"><strong>Step 6️⃣：使用</strong> <a hidden class="anchor" aria-hidden="true" href="#step-6使用">#</a></h3>
+<h3 id="tt"><strong>tt</strong><a hidden class="anchor" aria-hidden="true" href="#tt">#</a></h3>
+<h3 id="回放某次慢调用"> <strong>回放某次慢调用</strong><a hidden class="anchor" aria-hidden="true" href="#回放某次慢调用">#</a></h3>
+<pre tabindex="0"><code>tt -t com.example.payment.PaymentService charge
+tt -l
+tt -i 1000
+tt -w 1000
+</code></pre><p>可以查看参数、返回值、调用堆栈，非常适合深入分析。</p>
+<hr>
+<h2 id="-实战技巧总结"><strong>📌 实战技巧总结</strong><a hidden class="anchor" aria-hidden="true" href="#-实战技巧总结">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>场景</strong></th>
+          <th><strong>工具 / 命令</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>某个页面或接口响应慢</td>
+          <td>trace 顶层方法</td>
+      </tr>
+      <tr>
+          <td>细查哪个内部方法最耗时</td>
+          <td>trace 继续深入子方法</td>
+      </tr>
+      <tr>
+          <td>看参数和返回值 + 耗时</td>
+          <td>watch</td>
+      </tr>
+      <tr>
+          <td>大量数据时，平均耗时长</td>
+          <td>monitor</td>
+      </tr>
+      <tr>
+          <td>多次慢调用，精确重放分析</td>
+          <td>tt</td>
+      </tr>
+      <tr>
+          <td>不确定代码在哪执行</td>
+          <td>jad + search-class + sc</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-附加命令小抄"><strong>✅ 附加命令小抄</strong><a hidden class="anchor" aria-hidden="true" href="#-附加命令小抄">#</a></h2>
+<pre tabindex="0"><code># 查找类
+sc -d *OrderService
+
+# 反编译类
+jad com.example.service.OrderService
+
+# 查看所有加载类
+sc -d
+
+# 查看方法耗时排序
+profiler start
+profiler stop
+</code></pre><hr>
+<h2 id="-优化建议方向"><strong>🧠 优化建议方向</strong><a hidden class="anchor" aria-hidden="true" href="#-优化建议方向">#</a></h2>
+<ul>
+<li>
+<p>是否有慢 SQL：可结合日志、SQL 分析工具查看</p>
+</li>
+<li>
+<p>是否重复远程调用：加缓存、聚合请求</p>
+</li>
+<li>
+<p>是否线程池/并行未生效：检查线程模型</p>
+</li>
+<li>
+<p>是否 GC 频繁：结合 jvm 查看内存情况</p>
+</li>
+</ul>
+<hr>
+<h2 id="-小结"><strong>🏁 小结</strong><a hidden class="anchor" aria-hidden="true" href="#-小结">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>工具组合</strong></th>
+          <th><strong>用途</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>monitor + trace</td>
+          <td>找慢方法 + 慢步骤</td>
+      </tr>
+      <tr>
+          <td>trace + watch</td>
+          <td>找慢步骤 + 看入参结果</td>
+      </tr>
+      <tr>
+          <td>trace + tt</td>
+          <td>找调用链 + 精准回放</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yinshaojun001.github.io/">日拱一卒，Done is better than perfect</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>日拱一卒，Done is better than perfect</title>
+    <link>https://yinshaojun001.github.io/</link>
+    <description>Recent content on 日拱一卒，Done is better than perfect</description>
+    <generator>Hugo -- 0.147.8</generator>
+    <language>zh</language>
+    <lastBuildDate>Sun, 03 Aug 2025 23:51:08 +0800</lastBuildDate>
+    <atom:link href="https://yinshaojun001.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于价值观</title>
+      <link>https://yinshaojun001.github.io/posts/%E5%85%B3%E4%BA%8E%E4%BB%B7%E5%80%BC%E8%A7%82/</link>
+      <pubDate>Sun, 03 Aug 2025 23:51:08 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E5%85%B3%E4%BA%8E%E4%BB%B7%E5%80%BC%E8%A7%82/</guid>
+      <description>&lt;p&gt;今天看到了一句话叫做：
+做符合你价值观的决定&lt;/p&gt;
+&lt;p&gt;我突然发现，我好像都不知道什么是价值观，&lt;/p&gt;
+&lt;p&gt;ChatGPT了一下，给了我 20 个词语：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;成就（完成目标、获得认可）&lt;/li&gt;
+&lt;li&gt;诚信（真实、诚实）&lt;/li&gt;
+&lt;li&gt;自由（自主决定人生）&lt;/li&gt;
+&lt;li&gt;爱（亲密关系、深厚情感）&lt;/li&gt;
+&lt;li&gt;安全感（生活有保障）&lt;/li&gt;
+&lt;li&gt;冒险（探索新事物、挑战）&lt;/li&gt;
+&lt;li&gt;学习（成长、获得知识）&lt;/li&gt;
+&lt;li&gt;家庭（亲情、陪伴）&lt;/li&gt;
+&lt;li&gt;健康（身心状态良好）&lt;/li&gt;
+&lt;li&gt;尊重（被理解与被重视）&lt;/li&gt;
+&lt;li&gt;影响力（改变世界、领导他人）&lt;/li&gt;
+&lt;li&gt;财富（经济自由、财务独立）&lt;/li&gt;
+&lt;li&gt;美（审美、艺术、环境）&lt;/li&gt;
+&lt;li&gt;和谐（人际关系融洽）&lt;/li&gt;
+&lt;li&gt;独立（不依赖他人）&lt;/li&gt;
+&lt;li&gt;责任（担当、可靠）&lt;/li&gt;
+&lt;li&gt;创造力（表达、创新）&lt;/li&gt;
+&lt;li&gt;信仰（宗教或精神力量）&lt;/li&gt;
+&lt;li&gt;快乐（享受生活、轻松）&lt;/li&gt;
+&lt;li&gt;公正（公平、正义）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;让我选了 10 个，又从 10 个选到了 5 个，最后再选剩下 3个
+剩下了： 健康、独立、学习&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Performance</title>
+      <link>https://yinshaojun001.github.io/posts/performance/</link>
+      <pubDate>Mon, 28 Jul 2025 11:36:08 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/performance/</guid>
+      <description>&lt;h1 id=&#34;-性能与负载-入门名词描述&#34;&gt;📘 性能与负载 入门名词描述&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;“没有解决方案，只有利弊权衡。尽你所能获取最好的利弊权衡，这是你唯一能指望的事。”&lt;/em&gt;&lt;br&gt;
+——《DDIA》&lt;/p&gt;&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-一什么是负载load&#34;&gt;🧩 一、什么是负载（Load）&lt;/h2&gt;
+&lt;h3 id=&#34;-定义&#34;&gt;📌 定义&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;负载 = 系统正在承受的压力&lt;/strong&gt;，可以通过多个维度的指标来描述。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>关于我</title>
+      <link>https://yinshaojun001.github.io/about/%E5%85%B3%E4%BA%8E%E6%88%91/</link>
+      <pubDate>Sat, 26 Jul 2025 22:18:04 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/about/%E5%85%B3%E4%BA%8E%E6%88%91/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Arthas 实战教程：排查 Java 代码执行缓慢问题</title>
+      <link>https://yinshaojun001.github.io/posts/arthas%E6%8E%92%E6%9F%A5/</link>
+      <pubDate>Fri, 25 Jul 2025 17:34:25 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/arthas%E6%8E%92%E6%9F%A5/</guid>
+      <description>&lt;hr&gt;
+&lt;h2 id=&#34;-排查目标&#34;&gt;&lt;strong&gt;🎯 排查目标&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;定位 Java 应用中 &lt;strong&gt;执行缓慢的代码段&lt;/strong&gt;，找出方法耗时最长的地方，帮助性能优化。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-常用命令对比&#34;&gt;&lt;strong&gt;🛠️ 常用命令对比&lt;/strong&gt;&lt;/h2&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;命令&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;作用&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;使用场景&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;trace&lt;/td&gt;
+          &lt;td&gt;追踪方法内部每一步执行耗时&lt;/td&gt;
+          &lt;td&gt;定位慢步骤、方法耗时分布&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;watch&lt;/td&gt;
+          &lt;td&gt;观察方法入参、返回值、执行耗时&lt;/td&gt;
+          &lt;td&gt;查看调用情况及结果&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;monitor&lt;/td&gt;
+          &lt;td&gt;统计方法的 QPS、平均耗时、失败率&lt;/td&gt;
+          &lt;td&gt;观察方法整体性能&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;tt&lt;/td&gt;
+          &lt;td&gt;方法调用记录快照，可回放&lt;/td&gt;
+          &lt;td&gt;精确分析慢调用参数与路径&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;profiler&lt;/td&gt;
+          &lt;td&gt;CPU 级别采样，适合查找热点（更底层）&lt;/td&gt;
+          &lt;td&gt;大范围性能瓶颈分析（非单方法）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-排查流程示例&#34;&gt;&lt;strong&gt;🔍 排查流程示例&lt;/strong&gt;&lt;/h2&gt;
+&lt;h3 id=&#34;step-1用&#34;&gt;&lt;strong&gt;Step 1️⃣：用&lt;/strong&gt; &lt;/h3&gt;
+&lt;h3 id=&#34;monitor&#34;&gt;&lt;strong&gt;monitor&lt;/strong&gt;&lt;/h3&gt;
+&lt;h3 id=&#34;看哪个方法慢&#34;&gt; &lt;strong&gt;看哪个方法慢&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;monitor -c 5 com.example.service.OrderService placeOrder
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;查看最近 5 次调用统计，包含平均耗时（avg-rt）。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>做一次系统压测报告</title>
+      <link>https://yinshaojun001.github.io/posts/%E5%81%9A%E4%B8%80%E6%AC%A1%E7%B3%BB%E7%BB%9F%E5%8E%8B%E6%B5%8B%E6%8A%A5%E5%91%8A/</link>
+      <pubDate>Mon, 21 Jul 2025 17:51:58 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E5%81%9A%E4%B8%80%E6%AC%A1%E7%B3%BB%E7%BB%9F%E5%8E%8B%E6%B5%8B%E6%8A%A5%E5%91%8A/</guid>
+      <description>&lt;hr&gt;
+&lt;h3 id=&#34;前端崩溃分析&#34;&gt;前端崩溃分析&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;前端请求携带大量产品 ID 拼接到 URL，导致 URL 超长请求失败&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-压测场景说明&#34;&gt;&lt;strong&gt;📌 压测场景说明&lt;/strong&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;压测入口接口&lt;/strong&gt;：/batchChannelProduct/save&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;数据量级&lt;/strong&gt;：Excel 文件中包含 69 条产品对接配置数据&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>问题排查记录—前端URL过长导致页面连接被终止</title>
+      <link>https://yinshaojun001.github.io/posts/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95%E5%89%8D%E7%AB%AFurl%E8%BF%87%E9%95%BF%E5%AF%BC%E8%87%B4%E9%A1%B5%E9%9D%A2%E8%BF%9E%E6%8E%A5%E8%A2%AB%E7%BB%88%E6%AD%A2/</link>
+      <pubDate>Mon, 21 Jul 2025 00:43:32 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95%E5%89%8D%E7%AB%AFurl%E8%BF%87%E9%95%BF%E5%AF%BC%E8%87%B4%E9%A1%B5%E9%9D%A2%E8%BF%9E%E6%8E%A5%E8%A2%AB%E7%BB%88%E6%AD%A2/</guid>
+      <description>&lt;hr&gt;
+&lt;h2 id=&#34;一问题描述&#34;&gt;一、问题描述&lt;/h2&gt;
+&lt;p&gt;系统中批量对接功能导入包含 30+ 产品的 Excel 文件后，数据成功写入数据库，但反显页面无法打开，浏览器提示：&lt;/p&gt;
+&lt;p&gt;sit-www.suibianxieyigewangye.com 意外终止了连接。&lt;/p&gt;
+&lt;p&gt;使用浏览器 F12 开发者工具无接口调用记录，服务器端日志中也无对应请求记录。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>系统批量对接放开最大限制</title>
+      <link>https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/</link>
+      <pubDate>Fri, 18 Jul 2025 10:09:28 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E7%B3%BB%E7%BB%9F%E6%89%B9%E9%87%8F%E5%AF%B9%E6%8E%A5%E6%96%B9%E6%B3%95%E6%9C%80%E5%A4%A7%E9%99%90%E5%88%B6/</guid>
+      <description>&lt;h2&gt;&lt;/h2&gt;
+&lt;h3 id=&#34;一项目现状分析&#34;&gt;&lt;strong&gt;一、项目现状分析&lt;/strong&gt;&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;项目&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;内容&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;生产环境&lt;/td&gt;
+          &lt;td&gt;8G 单实例服务器，（cpu 可扩展）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;当前处理限制&lt;/td&gt;
+          &lt;td&gt;前端限制 Excel 最多 20 个产品，后端同步处理&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;处理逻辑&lt;/td&gt;
+          &lt;td&gt;Controller 直接调用 batchCopyChannelProduct(List) 并行处理分支入数据库&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;痛点&lt;/td&gt;
+          &lt;td&gt;&amp;gt;20 条时耗时过长，可能超过前端 timeout 时间 (30s)&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二需求形成&#34;&gt;&lt;strong&gt;二、需求形成&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;831 批量产品替换，市场替换方案不明确无规划，需要支持灵活快速上架新产品&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>捋一下JMM</title>
+      <link>https://yinshaojun001.github.io/posts/%E6%8D%8B%E4%B8%80%E4%B8%8Bjmm/</link>
+      <pubDate>Wed, 16 Jul 2025 23:51:45 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E6%8D%8B%E4%B8%80%E4%B8%8Bjmm/</guid>
+      <description>&lt;h1 id=&#34;java-memory-modeljmm与-jvm-运行时内存区域详解&#34;&gt;Java Memory Model（JMM）与 JVM 运行时内存区域详解&lt;/h1&gt;
+&lt;h2 id=&#34;一java-memory-modeljmm概述&#34;&gt;一、Java Memory Model（JMM）概述&lt;/h2&gt;
+&lt;p&gt;JMM（Java Memory Model）是 Java 虚拟机规范中定义的&lt;strong&gt;线程之间如何共享变量&lt;/strong&gt;的一种抽象模型，用于屏蔽各种硬件和操作系统内存访问差异，确保多线程程序在不同平台下都能实现一致的内存语义。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>记一次问题梳理思路</title>
+      <link>https://yinshaojun001.github.io/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/</link>
+      <pubDate>Fri, 11 Jul 2025 08:51:56 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E6%A2%B3%E7%90%86%E6%80%9D%E8%B7%AF/</guid>
+      <description>&lt;h2 id=&#34;situation背景&#34;&gt;&lt;strong&gt;（Situation）背景&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;在系统中，我们支持批量处理产品对接与修改。随着业务发展，用户希望&lt;strong&gt;一次批量操作上百甚至上千个产品&lt;/strong&gt;。但我们发现，在和流程引擎联动进行批量任务时，&lt;strong&gt;系统出现了数据库连接池耗尽、发布失败的问题&lt;/strong&gt;，影响了用户体验并造成流程失败。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Arthas初始用</title>
+      <link>https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/</link>
+      <pubDate>Mon, 07 Jul 2025 17:56:54 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/arthas%E5%88%9D%E5%A7%8B%E7%94%A8/</guid>
+      <description>&lt;p&gt;在服务器中使用&lt;/p&gt;
+&lt;h2 id=&#34;一行命令快速启动&#34;&gt;&lt;strong&gt;一行命令快速启动&lt;/strong&gt;&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;curl -O https://arthas.aliyun.com/arthas-boot.jar &amp;amp;&amp;amp; java -jar arthas-boot.jar
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;使用 arthas 查看是否存在某个类:
+sc -d 全限定类名
+sc -d com.xxx.demo.service.UserService
+这条命令的含义是：&lt;strong&gt;查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）&lt;/strong&gt;。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>多线程CompletableFuture 和 parallelStream使用</title>
+      <link>https://yinshaojun001.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 30 Jun 2025 22:26:28 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/</guid>
+      <description>&lt;p&gt;CompletableFuture 和 parallelStream 都是 Java 中用于&lt;strong&gt;并发执行任务&lt;/strong&gt;的工具，属于 &lt;strong&gt;异步编程/并行计算&lt;/strong&gt; 的范畴，但它们的使用场景、机制和控制能力各有不同。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-一&#34;&gt;&lt;strong&gt;✅ 一、&lt;/strong&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;completablefuture&#34;&gt;&lt;strong&gt;CompletableFuture&lt;/strong&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;使用及注意事项&#34;&gt; &lt;strong&gt;使用及注意事项&lt;/strong&gt;&lt;/h2&gt;
+&lt;h3 id=&#34;-1-简介&#34;&gt;&lt;strong&gt;🔹 1. 简介&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;CompletableFuture 是 Java 8 引入的用于实现异步编程的类，属于 java.util.concurrent 包，可以：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>MySQL_事务与MVCC行为详解</title>
+      <link>https://yinshaojun001.github.io/posts/mysql_%E4%BA%8B%E5%8A%A1%E4%B8%8Emvcc%E8%A1%8C%E4%B8%BA%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Thu, 26 Jun 2025 13:55:41 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/mysql_%E4%BA%8B%E5%8A%A1%E4%B8%8Emvcc%E8%A1%8C%E4%B8%BA%E8%AF%A6%E8%A7%A3/</guid>
+      <description>&lt;h1 id=&#34;-mysql-事务一致性与-mvcc-行为详解&#34;&gt;📘 MySQL 事务一致性与 MVCC 行为详解&lt;/h1&gt;
+&lt;p&gt;本笔记主要围绕以下问题展开讲解：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;事务 A 中执行了 &lt;code&gt;SELECT * FROM table1&lt;/code&gt; 还未提交，事务 B 中执行了新增并提交，此时事务 A 执行 &lt;code&gt;SELECT * FROM table1 WHERE id BETWEEN 1 AND 47 FOR UPDATE&lt;/code&gt; 会看到事务 B 插入的数据吗？&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>深入理解 Java 虚拟机 - 学习笔记整理（基于《深入理解Java虚拟机》）--01</title>
+      <link>https://yinshaojun001.github.io/posts/my-first-post/</link>
+      <pubDate>Tue, 24 Jun 2025 08:58:00 +0800</pubDate>
+      <guid>https://yinshaojun001.github.io/posts/my-first-post/</guid>
+      <description>&lt;p&gt;⸻&lt;/p&gt;
+&lt;p&gt;深入理解 Java 虚拟机 - 学习笔记整理（基于《深入理解Java虚拟机》）&lt;/p&gt;
+&lt;p&gt;Java 的优点
+1.	摆脱硬件平台束缚，一次编写，到处运行的理想（Write Once, Run Anywhere）
+•	Java 程序编译生成的是 .class 字节码文件，而不是直接生成机器码。
+•	JVM（Java 虚拟机）在不同的硬件和操作系统平台上有不同的实现，负责将统一的字节码“翻译”为当前平台可以运行的机器指令。
+🔍 为什么这是优点？别的语言有吗？哪些语言受硬件平台限制？
+•	很多语言（如 C/C++）编译生成的是特定平台的机器码，换平台通常需要重新编译。
+•	Java 依赖 JVM 实现了平台无关性，不需要重新编译。
+•	类似的语言还有 Python（解释器）、.NET（通过 CLR）、Kotlin（编译为 JVM 字节码）等。
+•	**受硬件平台限制的语言：**C、C++、Rust（默认需要重新编译才能跨平台）。
+2.	相对安全的内存管理和访问机制，避免了绝大部分内存泄漏和指针越界问题
+•	Java 拥有自动垃圾回收机制，开发者不需要手动释放内存。
+•	不允许程序直接操作指针（如 C/C++ 中的指针运算）。
+🔍 什么叫内存泄漏？
+•	指程序中某些对象不再使用，却无法被 GC 回收，导致内存持续占用。
+•	示例：对象被无意义地引用着，GC 无法判断可以释放。
+🔍 什么是指针越界？
+•	在 C/C++ 中访问数组或内存块时下标超出分配范围，可能导致读取或写入非法内存，引发崩溃或安全问题。
+🔍 内存管理 vs 访问机制
+•	内存管理机制：如何分配和回收内存（Java 使用堆、栈结构，GC 机制自动回收）。
+•	内存访问机制：如何访问内存中数据，是否有越界检测、是否暴露底层地址（Java 通过数组越界检查、封装访问）。
+3.	实现了热点代码检测和运行时编译及优化（JIT），程序性能随运行时间优化
+•	JVM 运行过程中，会监控哪些代码执行频繁（热点代码）。
+•	使用 JIT 编译器将热点代码从字节码编译为本地机器码，提高执行速度。
+🔍 为什么这样能提高性能？
+•	热点代码一旦编译为机器码，执行速度大幅提高。
+•	JIT 编译还能根据运行时数据做优化（如内联、逃逸分析、去锁）。
+4.	拥有完善的 API 体系与强大生态
+•	Java 官方提供广泛的标准库（集合、IO、并发、网络等）。
+•	社区支持丰富：Guava、Apache Commons、Spring、Hibernate 等。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
