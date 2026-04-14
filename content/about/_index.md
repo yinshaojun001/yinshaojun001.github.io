@@ -1,5 +1,5 @@
 +++
-title = "About"
+title = "关于"
 description = "关于我"
 layout = "list"
 intro = "Java 后端工程师，正在转型 AI Agent 工程师。"

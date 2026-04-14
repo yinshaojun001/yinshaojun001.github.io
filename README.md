@@ -1,96 +1,146 @@
 # yinshaojun001.github.io
 
-这是博客的 **Hugo 源码工程**。
+这是博客的 **Hugo 源码工程**，用于长期维护我的个人介绍、技术文章和持续输出。
 
-## 当前目标
+## 仓库定位
 
-- 把旧的静态发布产物仓库恢复为可维护的 Hugo 项目
-- 重建首页、文章页、About 页和归档页
-- 通过 GitHub Actions 自动发布到 GitHub Pages
-- 尽量把历史文章迁回 Markdown 内容源
+这个仓库不是单纯的静态页面产物，而是博客的可维护源码，主要承载：
 
-## 环境准备
+- 首页与个人品牌表达
+- 技术文章内容
+- About 页面与作者信息
+- GitHub Pages 自动发布配置
 
-需要：
+当前博客的主方向是：
 
-- Hugo Extended（当前本地已用 0.160.1 验证）
-- Python 3（用于迁移脚本与测试）
+- Java 后端
+- AI Agent / Agent Engineering
+- 性能优化、系统排障、长期技术写作
 
-如果你要运行迁移脚本或测试，先创建虚拟环境：
+## 技术栈与环境
+
+本地维护这个博客主要需要：
+
+- **Hugo Extended**：当前已用 `0.160.1` 验证
+- **Python 3**：用于迁移脚本和测试
+
+如果你要运行迁移脚本或相关测试，可以先创建本地虚拟环境：
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install pytest beautifulsoup4
 ```
 
-## 本地开发
+## 本地启动
 
-本地预览：
+本地预览博客：
 
 ```bash
 hugo server -D
 ```
 
-生产构建：
+启动后访问：
+
+- `http://localhost:1313/`
+
+## 本地构建检查
+
+正式提交前建议先做一次生产构建：
 
 ```bash
 hugo --minify
 ```
 
-## 新增文章
+如果你还需要运行迁移脚本相关测试，可在虚拟环境中执行：
 
-新建文章：
+```bash
+.venv/bin/python -m pytest -q
+```
+
+## 新建文章
+
+创建一篇新文章：
 
 ```bash
 hugo new posts/my-new-post.md
 ```
 
-文章默认模板：
+文章默认模板位于：
 
 - `archetypes/default.md`
 
-文章内容目录：
+文章内容目录位于：
 
 - `content/posts/`
 
-## 结构说明
-
-- `content/`：Markdown 内容
-- `layouts/`：Hugo 模板
-- `assets/`：样式等前端资源
-- `scripts/`：迁移与辅助脚本
-- `docs/`：设计说明、实施计划、迁移说明
-
 ## 常见维护入口
+
+平时最常改动的位置如下：
 
 - 写文章：`content/posts/`
 - 改首页文案：`content/_index.md`
 - 改首页结构：`layouts/index.html`
-- 改 About：`content/about/_index.md`
-- 改全站布局与文章页：`layouts/`
+- 改 About 内容：`content/about/_index.md`
+- 改列表页/全站模板：`layouts/`
 - 改样式：`assets/css/main.css`
+- 改站点导航与基础配置：`hugo.toml`
 
-## GitHub Pages 自动发布
+## 项目结构
+
+- `content/`：Markdown 内容
+- `layouts/`：Hugo 模板
+- `assets/`：样式和前端资源
+- `scripts/`：迁移与辅助脚本
+- `tests/`：迁移脚本相关测试
+- `docs/`：设计说明、计划、迁移记录
+
+## 自动发布方式
+
+当前博客通过 **GitHub Actions** 自动发布到 **GitHub Pages**。
 
 工作流文件：
 
 - `.github/workflows/hugo.yml`
 
-发布方式：
+当前发布分支：
 
-1. 把默认开发分支切到 `main`
-2. 在 GitHub 仓库设置里进入 **Settings → Pages**
-3. 在 **Build and deployment → Source** 选择 **GitHub Actions**
-4. 之后每次 push 到 `main`，GitHub Actions 会自动构建并发布
+- `master`
 
-## 迁移脚本
+日常发布流程：
 
-运行旧文章迁移：
+```bash
+git add .
+git commit -m "docs: update blog content"
+git push origin master
+```
+
+只要 push 到 `master`，GitHub Actions 就会自动构建并部署站点。
+
+## GitHub Pages 设置与查看发布结果
+
+第一次检查或排查发布时，去 GitHub 仓库中确认：
+
+1. 打开 **Settings → Pages**
+2. 在 **Build and deployment → Source** 里选择 **GitHub Actions**
+
+查看是否发布成功：
+
+1. 打开仓库的 **Actions**
+2. 查看工作流 **Build and deploy Hugo site**
+3. 如果最新一次运行是绿色对勾，说明发布成功
+
+线上地址：
+
+- `https://yinshaojun001.github.io/`
+
+## 历史文章迁移
+
+如果需要重新运行旧文章迁移脚本：
 
 ```bash
 .venv/bin/python scripts/migrate_legacy_posts.py --source . --dest content/posts
 ```
 
-迁移说明：
+迁移说明参考：
 
 - `docs/migration/legacy-migration-notes.md`

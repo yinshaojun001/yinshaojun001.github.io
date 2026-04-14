@@ -1,14 +1,22 @@
 {{ define "main" }}
+{{ $eyebrow := "页面" }}
+{{ $displayTitle := .Title }}
+{{ if eq .Section "posts" }}
+  {{ $eyebrow = "文章归档" }}
+{{ else if and (eq .Kind "taxonomy") (eq .Data.Plural "tags") }}
+  {{ $eyebrow = "标签索引" }}
+  {{ $displayTitle = "标签" }}
+{{ end }}
 <section class="container list-shell">
   <header class="page-head">
-    <p class="eyebrow">{{ if eq .Section "posts" }}Archive{{ else }}Page{{ end }}</p>
-    <h1>{{ .Title }}</h1>
+    <p class="eyebrow">{{ $eyebrow }}</p>
+    <h1>{{ $displayTitle }}</h1>
     {{ with .Params.intro }}<p class="page-intro">{{ . }}</p>{{ end }}
     {{ if eq .Section "about" }}
     <div class="about-card panel">
       <div class="about-card-head">
         <div>
-          <p class="section-kicker">Profile</p>
+          <p class="section-kicker">个人信息</p>
           <h2>{{ .Params.profile_name }}</h2>
           <p class="about-role">{{ .Params.profile_role }}</p>
         </div>

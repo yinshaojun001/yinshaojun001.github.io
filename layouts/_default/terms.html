@@ -1,8 +1,8 @@
 {{ define "main" }}
 <section class="container list-shell">
   <header class="page-head">
-    <p class="eyebrow">Taxonomy</p>
-    <h1>{{ .Title }}</h1>
+    <p class="eyebrow">标签索引</p>
+    <h1>{{ if and (eq .Kind "taxonomy") (eq .Data.Plural "tags") }}标签{{ else }}{{ .Title }}{{ end }}</h1>
     <p class="page-intro">按主题浏览文章与长期积累的内容。</p>
   </header>
   <div class="terms-grid">

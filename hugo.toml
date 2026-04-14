@@ -24,22 +24,22 @@ canonifyURLs = false
 [menu]
   [[menu.main]]
     identifier = "home"
-    name = "Home"
+    name = "首页"
     pageRef = "/"
     weight = 10
   [[menu.main]]
     identifier = "posts"
-    name = "Posts"
+    name = "文章"
     pageRef = "/posts"
     weight = 20
   [[menu.main]]
     identifier = "about"
-    name = "About"
+    name = "关于"
     pageRef = "/about"
     weight = 30
   [[menu.main]]
     identifier = "tags"
-    name = "Tags"
+    name = "标签"
     pageRef = "/tags"
     weight = 40
 
