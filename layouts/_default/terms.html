@@ -1,0 +1,19 @@
+{{ define "main" }}
+<section class="container list-shell">
+  <header class="page-head">
+    <p class="eyebrow">Taxonomy</p>
+    <h1>{{ .Title }}</h1>
+    <p class="page-intro">按主题浏览文章与长期积累的内容。</p>
+  </header>
+  <div class="terms-grid">
+    {{ range .Data.Terms.ByCount }}
+    <a class="panel term-card" href="{{ .Page.RelPermalink }}">
+      <h2>{{ .Page.Title }}</h2>
+      <p>{{ .Count }} 篇内容</p>
+    </a>
+    {{ else }}
+    <div class="panel empty-state">标签会在内容迁移后逐步出现。</div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

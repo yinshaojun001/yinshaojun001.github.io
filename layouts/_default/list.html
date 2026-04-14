@@ -1,0 +1,26 @@
+{{ define "main" }}
+<section class="container list-shell">
+  <header class="page-head">
+    <p class="eyebrow">{{ if eq .Section "posts" }}Archive{{ else }}Page{{ end }}</p>
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.intro }}<p class="page-intro">{{ . }}</p>{{ end }}
+    {{ if and (ne .Section "posts") .Content }}<div class="page-content">{{ .Content }}</div>{{ end }}
+  </header>
+
+  {{ if eq .Section "posts" }}
+  <div class="post-grid">
+    {{ range .Pages.ByDate.Reverse }}
+      {{ partial "post-card.html" . }}
+    {{ else }}
+      <div class="panel empty-state">还没有文章。</div>
+    {{ end }}
+  </div>
+  {{ else if .Pages }}
+  <div class="post-grid">
+    {{ range .Pages.ByDate.Reverse }}
+      {{ partial "post-card.html" . }}
+    {{ end }}
+  </div>
+  {{ end }}
+</section>
+{{ end }}
