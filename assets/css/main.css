@@ -176,6 +176,44 @@ p { margin: 0 0 1rem; }
 }
 .page-content {
   margin-top: 18px;
+  max-width: 860px;
+}
+.about-card {
+  margin-top: 22px;
+  display: grid;
+  gap: 18px;
+}
+.about-card-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: 20px;
+}
+.about-card-head h2 {
+  margin: 0 0 8px;
+}
+.about-role {
+  color: var(--accent-2);
+  font-weight: 600;
+  margin: 0;
+}
+.about-meta {
+  display: grid;
+  gap: 12px;
+}
+.about-meta div {
+  display: grid;
+  gap: 2px;
+}
+.about-meta span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.about-focus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .term-card h2 {
   margin: 0 0 8px;
@@ -192,6 +230,9 @@ p { margin: 0 0 1rem; }
   .topics-grid,
   .post-grid,
   .terms-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-card-head {
     grid-template-columns: 1fr;
   }
 }

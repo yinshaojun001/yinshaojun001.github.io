@@ -4,6 +4,28 @@
     <p class="eyebrow">{{ if eq .Section "posts" }}Archive{{ else }}Page{{ end }}</p>
     <h1>{{ .Title }}</h1>
     {{ with .Params.intro }}<p class="page-intro">{{ . }}</p>{{ end }}
+    {{ if eq .Section "about" }}
+    <div class="about-card panel">
+      <div class="about-card-head">
+        <div>
+          <p class="section-kicker">Profile</p>
+          <h2>{{ .Params.profile_name }}</h2>
+          <p class="about-role">{{ .Params.profile_role }}</p>
+        </div>
+        <div class="about-meta">
+          <div><span>城市</span><strong>{{ .Params.profile_city }}</strong></div>
+          <div><span>GitHub</span><a class="text-link" href="{{ .Params.profile_github }}" target="_blank" rel="noreferrer">{{ .Params.profile_github }}</a></div>
+          <div><span>邮箱</span><a class="text-link" href="mailto:{{ .Params.profile_email }}">{{ .Params.profile_email }}</a></div>
+          <div><span>微信 / 公众号</span><strong>{{ .Params.profile_wechat }}</strong></div>
+        </div>
+      </div>
+      <div class="about-focus">
+        {{ range .Params.focus_tags }}
+        <span class="topic-pill">{{ . }}</span>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
     {{ if and (ne .Section "posts") .Content }}<div class="page-content">{{ .Content }}</div>{{ end }}
   </header>
 

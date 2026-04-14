@@ -3,6 +3,13 @@ title = "About"
 description = "关于我"
 layout = "list"
 intro = "Java 后端工程师，正在转型 AI Agent 工程师。"
+profile_name = "尹绍钧"
+profile_role = "Java 后端工程师，正在转型 AI Agent 工程师"
+profile_city = "北京"
+profile_github = "https://github.com/yinshaojun001"
+profile_email = "yinshaojun001@gmail.com"
+profile_wechat = "inShocking"
+focus_tags = ["AI Agent", "Java 后端", "性能优化"]
 +++
 
 你好，我是 **尹绍钧**，一名 **Java 后端工程师**，正在转型为 **AI Agent 工程师**。
