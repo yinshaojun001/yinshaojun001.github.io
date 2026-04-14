@@ -3,14 +3,14 @@ title = "Arthas初始用"
 date = 2025-07-07T17:56:54+08:00
 draft = false
 slug = "arthas初始用"
-tags = []
+tags = ["Java", "JVM", "排障"]
 series = []
-summary = ""
+summary = "在服务器中使用 一行命令快速启动 ``` curl -O https://arthas.aliyun.com/arthas-boot.jar && java -jar arthas-boot.jar ``` 使用 art…"
 +++
 
 在服务器中使用
 
-## 一行命令快速启动[#](#一行命令快速启动)
+## 一行命令快速启动
 
 ```
 curl -O https://arthas.aliyun.com/arthas-boot.jar && java -jar arthas-boot.jar
@@ -71,8 +71,6 @@ sc -d com.xxx.demo.service.UserService
 
  classLoaderHash   6b884d57
 
-  
-
 Affect(row-cnt:1) cost in 334 ms.
 ```
 
@@ -84,7 +82,7 @@ sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService
 
 的作用是：查找当前 JVM 中是否加载了指定类，并打印该类的详细信息（-d 代表 detail）。
 
-## ✅ 解析结果详解：[#](#-解析结果详解)
+## ✅ 解析结果详解：
 
 ```
 [arthas@16]$ sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService
@@ -92,7 +90,7 @@ sc -d com.iac.cpp.config.flow.deploy.DemandManageDeployService
 
 你执行了查询这个类是否被加载。
 
-### ✅ 找到了目标类：[#](#-找到了目标类)
+### ✅ 找到了目标类：
 
 ```
 class-info        com.iac.cpp.config.flow.deploy.DemandManageDeployService
@@ -100,7 +98,7 @@ class-info        com.iac.cpp.config.flow.deploy.DemandManageDeployService
 
 说明类已经被加载进 JVM。
 
-### ✅ 类的来源：[#](#-类的来源)
+### ✅ 类的来源：
 
 ```
 code-source       file:/home/admin/release/new/iac-executable.jar!/BOOT-INF/lib/iac-cpp-config-1.0-SNAPSHOT.jar!/
@@ -110,7 +108,7 @@ code-source       file:/home/admin/release/new/iac-executable.jar!/BOOT-INF/lib/
 
 这常见于 Spring Boot fat jar（可执行 JAR） 打包方式。
 
-### ✅ 类的结构信息：[#](#-类的结构信息)
+### ✅ 类的结构信息：
 
 ```
 name              com.iac.cpp.config.flow.deploy.DemandManageDeployService
@@ -127,7 +125,7 @@ isSynthetic       false
 
 这些表示它是一个正常的 Java 类，不是接口、注解、枚举或匿名类。
 
-### ✅ 类修饰信息：[#](#-类修饰信息)
+### ✅ 类修饰信息：
 
 ```
 simple-name       DemandManageDeployService
@@ -136,7 +134,7 @@ modifier          public
 
 这是一个 public 修饰的类。
 
-### ✅ 注解信息：[#](#-注解信息)
+### ✅ 注解信息：
 
 ```
 annotation        org.springframework.stereotype.Service
@@ -144,7 +142,7 @@ annotation        org.springframework.stereotype.Service
 
 它被 @Service 注解，说明这是一个 Spring 容器中的服务类。
 
-### ✅ 实现结构（继承链）：[#](#-实现结构继承链)
+### ✅ 实现结构（继承链）：
 
 ```
 super-class       +-com.trustlife.common.config.deploy.BaseConfDeployService
@@ -153,7 +151,7 @@ super-class       +-com.trustlife.common.config.deploy.BaseConfDeployService
 
 说明它是继承自一个自定义父类 BaseConfDeployService。
 
-### ✅ 类加载器信息：[#](#-类加载器信息)
+### ✅ 类加载器信息：
 
 ```
 class-loader      +-org.springframework.boot.loader.LaunchedURLClassLoader@6b884d57
@@ -166,7 +164,7 @@ classLoaderHash   6b884d57
 
 这个信息对于你在 Arthas 中执行如 jad、watch、monitor、tt 命令非常重要，因为有些命令需要你提供 –classLoaderHash 来锁定类加载器。
 
-### ✅ 结尾提示：[#](#-结尾提示)
+### ✅ 结尾提示：
 
 ```
 Affect(row-cnt:1) cost in 334 ms.
@@ -174,7 +172,7 @@ Affect(row-cnt:1) cost in 334 ms.
 
 表示这个命令查到了 1 个类，耗时 334 毫秒。
 
-## ✅ 后续你可以干嘛？[#](#-后续你可以干嘛)
+## ✅ 后续你可以干嘛？
 
 你现在知道类已加载，可以做这些操作：
 
