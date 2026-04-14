@@ -5,6 +5,8 @@ defaultContentLanguage = "zh"
 enableRobotsTXT = true
 hasCJKLanguage = true
 summaryLength = 120
+relativeURLs = false
+canonifyURLs = false
 
 [params]
   author = "尹绍钧"
@@ -40,6 +42,10 @@ summaryLength = 120
     name = "Tags"
     pageRef = "/tags"
     weight = 40
+
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
 
 [markup]
   [markup.goldmark]

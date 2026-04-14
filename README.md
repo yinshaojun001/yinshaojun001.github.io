@@ -13,7 +13,7 @@
 
 需要：
 
-- Hugo Extended
+- Hugo Extended（当前本地已用 0.160.1 验证）
 - Python 3（用于迁移脚本与测试）
 
 本地预览：
@@ -36,6 +36,22 @@ hugo --minify
 - `scripts/`：迁移与辅助脚本
 - `docs/`：设计说明、实施计划、迁移说明
 
-## 发布思路
+## GitHub Pages 自动发布
 
-后续会通过 GitHub Actions 在 push 后自动构建并发布到 GitHub Pages。
+工作流文件：
+
+- `.github/workflows/hugo.yml`
+
+发布方式：
+
+1. 把默认开发分支切到 `main`
+2. 在 GitHub 仓库设置里进入 **Settings → Pages**
+3. 在 **Build and deployment → Source** 选择 **GitHub Actions**
+4. 之后每次 push 到 `main`，GitHub Actions 会自动构建并发布
+
+## 后续维护入口
+
+- 写文章：`content/posts/`
+- 改首页：`content/_index.md` + `layouts/index.html`
+- 改 About：`content/about/_index.md`
+- 改全站结构：`layouts/` 与 `assets/css/main.css`
