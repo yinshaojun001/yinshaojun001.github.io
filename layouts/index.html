@@ -1,14 +1,20 @@
 {{ define "main" }}
 {{ $posts := first 6 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
 <section class="hero container home-grid">
-  <div class="hero-main panel">
-    <p class="eyebrow">个人介绍 + 技术输出</p>
+  <div class="hero-main panel hero-panel">
+    <p class="eyebrow">{{ .Params.hero_eyebrow }}</p>
     <h1>{{ .Params.hero_title }}</h1>
     <p class="hero-copy">{{ .Params.hero_intro }}</p>
+    <div class="focus-list">
+      {{ range .Params.focus_points }}
+      <div class="focus-item">{{ . }}</div>
+      {{ end }}
+    </div>
   </div>
   <aside class="profile-card panel">
     <p class="eyebrow">About</p>
     <h2>{{ .Params.profile_name }}</h2>
+    <p class="profile-role">{{ .Params.profile_role }}</p>
     <p>{{ .Params.profile_intro }}</p>
     <a class="text-link" href="{{ "/about/" | relURL }}">查看完整介绍 →</a>
   </aside>
@@ -16,7 +22,10 @@
 
 <section class="container home-section">
   <div class="section-heading">
-    <h2>最新文章</h2>
+    <div>
+      <p class="section-kicker">Writing</p>
+      <h2>最新文章</h2>
+    </div>
     <a class="text-link" href="{{ "/posts/" | relURL }}">查看全部</a>
   </div>
   <div class="post-grid">
@@ -29,22 +38,28 @@
 </section>
 
 <section class="container home-section topics-grid">
-  <div class="panel">
+  <div class="panel topics-panel">
     <div class="section-heading compact">
-      <h2>关注主题</h2>
+      <div>
+        <p class="section-kicker">Focus</p>
+        <h2>长期关注主题</h2>
+      </div>
       <a class="text-link" href="{{ "/tags/" | relURL }}">浏览标签</a>
     </div>
-    <div class="tag-list">
+    <div class="topic-grid">
       {{ range .Params.featured_topics }}
-      <span class="tag-chip">{{ . }}</span>
+      <span class="topic-pill">{{ . }}</span>
       {{ end }}
     </div>
   </div>
-  <div class="panel">
+  <div class="panel journey-panel">
     <div class="section-heading compact">
-      <h2>当前状态</h2>
+      <div>
+        <p class="section-kicker">Journey</p>
+        <h2>这个博客在记录什么</h2>
+      </div>
     </div>
-    <p>博客正在从旧的静态站点恢复为真正可维护的 Hugo 工程。下一步会继续迁移历史文章，并进一步打磨首页与文章体验。</p>
+    <p>它既是我对已有工程经验的整理，也是我从 Java 后端工程师走向 AI Agent 工程师过程中的一份长期记录。这里不会只有“结论”，也会保留学习、试错和重新理解的过程。</p>
   </div>
 </section>
 {{ end }}
