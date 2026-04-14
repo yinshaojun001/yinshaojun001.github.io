@@ -1,0 +1,34 @@
+{{ define "main" }}
+<article class="container article-shell">
+  <header class="article-header">
+    <p class="eyebrow">Article</p>
+    <h1>{{ .Title }}</h1>
+    <div class="article-meta">
+      <span>{{ .Date.Format "2006-01-02" }}</span>
+      {{ with .Params.tags }}
+        <span>{{ delimit . " · " }}</span>
+      {{ end }}
+      {{ with .Params.series }}
+        <span>系列：{{ delimit . " / " }}</span>
+      {{ end }}
+    </div>
+    {{ with .Summary }}<p class="article-summary">{{ . }}</p>{{ end }}
+  </header>
+
+  {{ if gt (len .TableOfContents) 80 }}
+  <aside class="article-toc panel">
+    <h2>目录</h2>
+    {{ .TableOfContents }}
+  </aside>
+  {{ end }}
+
+  <section class="article-content panel">
+    {{ .Content }}
+  </section>
+
+  <nav class="article-nav">
+    {{ with .PrevInSection }}<a class="panel article-nav-link" href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ end }}
+    {{ with .NextInSection }}<a class="panel article-nav-link" href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ end }}
+  </nav>
+</article>
+{{ end }}
