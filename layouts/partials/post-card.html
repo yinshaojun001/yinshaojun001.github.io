@@ -1,8 +1,13 @@
 <article class="post-card">
   <div class="post-card-meta">
-    <span>{{ .Date.Format "2006-01-02" }}</span>
     {{ with .Params.tags }}
-    <span>{{ index . 0 }}</span>
+    <span class="tag">{{ index . 0 }}</span>
+    <span class="sep">·</span>
+    {{ end }}
+    <span>{{ .Date.Format "2006年01月02日" }}</span>
+    {{ with .ReadingTime }}
+    <span class="sep">·</span>
+    <span>{{ . }} 分钟阅读</span>
     {{ end }}
   </div>
   <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>

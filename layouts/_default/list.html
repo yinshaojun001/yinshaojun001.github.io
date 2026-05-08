@@ -9,21 +9,20 @@
 {{ end }}
 <section class="container list-shell">
   <header class="page-head">
-    <p class="eyebrow">{{ $eyebrow }}</p>
+    <p style="font-family:var(--font-sans);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted-2);margin:0 0 10px;">{{ $eyebrow }}</p>
     <h1>{{ $displayTitle }}</h1>
     {{ with .Params.intro }}<p class="page-intro">{{ . }}</p>{{ end }}
     {{ if eq .Section "about" }}
-    <div class="about-card panel">
+    <div class="about-card">
       <div class="about-card-head">
         <div>
-          <p class="section-kicker">个人信息</p>
           <h2>{{ .Params.profile_name }}</h2>
           <p class="about-role">{{ .Params.profile_role }}</p>
         </div>
         <div class="about-meta">
           <div><span>城市</span><strong>{{ .Params.profile_city }}</strong></div>
-          <div><span>GitHub</span><a class="text-link" href="{{ .Params.profile_github }}" target="_blank" rel="noreferrer">{{ .Params.profile_github }}</a></div>
-          <div><span>邮箱</span><a class="text-link" href="mailto:{{ .Params.profile_email }}">{{ .Params.profile_email }}</a></div>
+          <div><span>GitHub</span><a href="{{ .Params.profile_github }}" target="_blank" rel="noreferrer" style="color:var(--accent-blue);">{{ .Params.profile_github }}</a></div>
+          <div><span>邮箱</span><a href="mailto:{{ .Params.profile_email }}" style="color:var(--accent-blue);">{{ .Params.profile_email }}</a></div>
           <div><span>微信 / 公众号</span><strong>{{ .Params.profile_wechat }}</strong></div>
         </div>
       </div>
@@ -37,16 +36,25 @@
     {{ if and (ne .Section "posts") .Content }}<div class="page-content">{{ .Content }}</div>{{ end }}
   </header>
 
-  {{ if eq .Section "posts" }}
-  <div class="post-grid">
+  {{ if and (eq .Kind "taxonomy") (eq .Data.Plural "tags") }}
+  <div class="terms-grid" style="margin-top:32px;">
+    {{ range .Pages }}
+    <a class="term-card" href="{{ .RelPermalink }}">
+      <h2>{{ .Title }}</h2>
+      <p>{{ len .Pages }} 篇文章</p>
+    </a>
+    {{ end }}
+  </div>
+  {{ else if eq .Section "posts" }}
+  <div class="post-feed" style="margin-top:32px;">
     {{ range .Pages.ByDate.Reverse }}
       {{ partial "post-card.html" . }}
     {{ else }}
-      <div class="panel empty-state">还没有文章。</div>
+      <div class="empty-state">还没有文章。</div>
     {{ end }}
   </div>
   {{ else if .Pages }}
-  <div class="post-grid">
+  <div class="post-feed" style="margin-top:32px;">
     {{ range .Pages.ByDate.Reverse }}
       {{ partial "post-card.html" . }}
     {{ end }}

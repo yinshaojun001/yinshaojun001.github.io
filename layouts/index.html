@@ -1,96 +1,94 @@
 {{ define "main" }}
-{{ $posts := first 6 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
-<section class="hero container home-grid">
-  <div class="hero-main panel hero-panel">
-    <p class="eyebrow">{{ .Params.hero_eyebrow }}</p>
-    <h1>{{ .Params.hero_title }}</h1>
-    <p class="hero-copy">{{ .Params.hero_intro }}</p>
-    <div class="identity-strip">
-      {{ range .Params.identity_points }}
-      <span class="identity-pill">{{ . }}</span>
-      {{ end }}
-    </div>
-    <div class="focus-list">
-      {{ range .Params.focus_points }}
-      <div class="focus-item">{{ . }}</div>
-      {{ end }}
-    </div>
-  </div>
-  <aside class="profile-card panel author-panel">
-    <p class="eyebrow">作者</p>
-    <h2>{{ .Params.profile_name }}</h2>
-    <p class="profile-role">{{ .Params.profile_role }}</p>
-    <p>{{ .Params.profile_intro }}</p>
-    <div class="author-links">
-      <span>北京</span>
-      <a class="text-link" href="https://github.com/yinshaojun001" target="_blank" rel="noreferrer">GitHub</a>
-      <a class="text-link" href="mailto:yinshaojun001@gmail.com">Email</a>
-    </div>
-    <a class="text-link" href="{{ "/about/" | relURL }}">查看完整介绍 →</a>
-  </aside>
-</section>
+{{ $posts := first 8 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
 
-<section class="container home-section">
-  <div class="section-heading">
-    <div>
-      <p class="section-kicker">写作</p>
-      <h2>最新文章</h2>
-    </div>
-    <a class="text-link" href="{{ "/posts/" | relURL }}">查看全部 →</a>
-  </div>
-  <div class="post-grid">
-    {{ range $posts }}
-      {{ partial "post-card.html" . }}
-    {{ else }}
-      <div class="panel empty-state">文章会在这里出现。</div>
-    {{ end }}
-  </div>
-</section>
-
-<section class="container home-section topics-grid">
-  <div class="panel topics-panel">
-    <div class="section-heading compact">
-      <div>
-        <p class="section-kicker">关注</p>
-        <h2>长期关注主题</h2>
-      </div>
-      <a class="text-link" href="{{ "/tags/" | relURL }}">浏览标签 →</a>
-    </div>
-    <div class="topic-grid">
-      {{ range .Params.featured_topics }}
-      <span class="topic-pill">{{ . }}</span>
-      {{ end }}
-    </div>
-  </div>
-  <div class="panel journey-panel">
-    <div class="section-heading compact">
-      <div>
-        <p class="section-kicker">转型记录</p>
-        <h2>这个博客在记录什么</h2>
+<div class="container">
+  <div class="author-intro">
+    <div class="author-intro-inner">
+      <div class="author-intro-text">
+        <h1>{{ .Params.hero_title | default .Site.Title }}</h1>
+        <p class="tagline">{{ .Params.hero_intro | default .Site.Params.description }}</p>
+        <div class="author-meta-row">
+          <span>北京</span>
+          <span class="author-meta-sep">·</span>
+          <a href="https://github.com/yinshaojun001" target="_blank" rel="noreferrer">GitHub</a>
+          <span class="author-meta-sep">·</span>
+          <a href="mailto:yinshaojun001@gmail.com">Email</a>
+          <span class="author-meta-sep">·</span>
+          <a href="{{ "/about/" | relURL }}">关于我</a>
+        </div>
       </div>
     </div>
-    <p>它既是我对已有工程经验的整理，也是我从 Java 后端工程师走向 AI Agent 工程师过程中的一份长期记录。这里不会只有"结论"，也会保留学习、试错和重新理解的过程。</p>
-    <a class="text-link" href="{{ "/about/" | relURL }}">更多关于我的背景与联系方式 →</a>
   </div>
-</section>
 
-<section class="container inshocking-section">
-  <div class="inshocking-panel panel">
-    <div class="inshocking-header">
-      <div class="inshocking-header-left">
-        <span class="inshocking-kicker">个人资源站</span>
-        <span class="inshocking-title">inshocking.com</span>
+  <div class="home-layout">
+    <main class="home-feed">
+      <p class="feed-label">最新文章</p>
+      <div class="post-feed">
+        {{ range $posts }}
+          {{ partial "post-card.html" . }}
+        {{ else }}
+          <div class="empty-state">文章会在这里出现。</div>
+        {{ end }}
+        {{ if gt (len (where .Site.RegularPages "Section" "posts")) 8 }}
+        <div style="padding: 24px 0;">
+          <a href="{{ "/posts/" | relURL }}" style="font-size:0.9rem;color:var(--accent-blue);font-weight:500;">查看全部文章 →</a>
+        </div>
+        {{ end }}
       </div>
-      <a class="inshocking-open-link" href="https://www.inshocking.com" target="_blank" rel="noreferrer">在新标签页打开 ↗</a>
-    </div>
-    <div class="inshocking-frame-wrap">
-      <iframe
-        src="https://www.inshocking.com"
-        title="inshocking.com 个人资源站"
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-      ></iframe>
-    </div>
+    </main>
+
+    <aside class="home-sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-label">作者</p>
+        <div class="sidebar-author">
+          <span class="sidebar-author-name">{{ .Params.profile_name | default .Site.Params.author }}</span>
+          <span class="sidebar-author-role">{{ .Params.profile_role | default .Site.Params.description }}</span>
+          <div class="sidebar-links">
+            <a href="https://github.com/yinshaojun001" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="mailto:yinshaojun001@gmail.com">Email</a>
+            <a href="{{ "/about/" | relURL }}">完整介绍</a>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      {{ with .Params.featured_topics }}
+      <div class="sidebar-section">
+        <p class="sidebar-label">关注主题</p>
+        <div class="topic-list">
+          {{ range . }}
+          <span class="topic-pill">{{ . }}</span>
+          {{ end }}
+        </div>
+      </div>
+      <hr class="sidebar-divider">
+      {{ end }}
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">这个博客</p>
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.65;margin:0 0 12px;">它既是我对已有工程经验的整理，也是我从 Java 后端工程师走向 AI Agent 工程师过程中的一份长期记录。</p>
+        <a href="{{ "/about/" | relURL }}" style="font-size:0.85rem;color:var(--accent-blue);font-weight:500;">了解更多 →</a>
+      </div>
+    </aside>
   </div>
-</section>
+</div>
+
+<div class="container inshocking-section">
+  <div class="inshocking-header">
+    <div class="inshocking-header-left">
+      <span class="inshocking-kicker">个人资源站</span>
+      <span class="inshocking-title">inshocking.com</span>
+    </div>
+    <a class="inshocking-open-link" href="https://www.inshocking.com" target="_blank" rel="noreferrer">在新标签页打开 ↗</a>
+  </div>
+  <div class="inshocking-frame-wrap">
+    <iframe
+      src="https://www.inshocking.com"
+      title="inshocking.com 个人资源站"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+    ></iframe>
+  </div>
+</div>
 {{ end }}
