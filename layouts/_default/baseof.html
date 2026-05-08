@@ -4,6 +4,35 @@
     {{ partial "head.html" . }}
   </head>
   <body>
+    {{ if .IsHome }}
+    <div id="brand-intro" class="brand-intro">
+      <video id="brand-video" autoplay muted playsinline>
+        <source src="/brand.mp4" type="video/mp4">
+      </video>
+      <button class="brand-skip" onclick="skipIntro()">跳过</button>
+    </div>
+    <script>
+      (function() {
+        var key = 'brand_seen_v1';
+        var seen = sessionStorage.getItem(key);
+        var intro = document.getElementById('brand-intro');
+        if (seen) {
+          intro.style.display = 'none';
+          return;
+        }
+        document.body.style.overflow = 'hidden';
+        var video = document.getElementById('brand-video');
+        function endIntro() {
+          sessionStorage.setItem(key, '1');
+          intro.classList.add('brand-intro--out');
+          document.body.style.overflow = '';
+          setTimeout(function() { intro.style.display = 'none'; }, 600);
+        }
+        video.addEventListener('ended', endIntro);
+        window.skipIntro = endIntro;
+      })();
+    </script>
+    {{ end }}
     <div class="site-shell">
       {{ partial "header.html" . }}
       <main class="main-shell">
