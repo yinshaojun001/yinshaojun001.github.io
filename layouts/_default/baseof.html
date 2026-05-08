@@ -6,10 +6,16 @@
   <body>
     {{ if .IsHome }}
     <div id="brand-intro" class="brand-intro">
-      <video id="brand-video" autoplay muted playsinline>
+      <video id="brand-video" muted playsinline>
         <source src="/brand.mp4" type="video/mp4">
       </video>
-      <button class="brand-skip" onclick="skipIntro()">跳过</button>
+      <div id="brand-tap" class="brand-tap">
+        <div class="brand-tap-hint">
+          <span class="brand-tap-dot"></span>
+          点击任意处开始
+        </div>
+      </div>
+      <button class="brand-skip" id="brand-skip-btn" style="display:none" onclick="skipIntro()">跳过</button>
     </div>
     <script>
       (function() {
@@ -22,14 +28,36 @@
         }
         document.body.style.overflow = 'hidden';
         var video = document.getElementById('brand-video');
+        var tapLayer = document.getElementById('brand-tap');
+        var skipBtn = document.getElementById('brand-skip-btn');
+
         function endIntro() {
           sessionStorage.setItem(key, '1');
           intro.classList.add('brand-intro--out');
           document.body.style.overflow = '';
           setTimeout(function() { intro.style.display = 'none'; }, 600);
         }
+
+        function startVideo() {
+          tapLayer.style.display = 'none';
+          skipBtn.style.display = 'block';
+          video.play().catch(function() {
+            endIntro();
+          });
+        }
+
+        tapLayer.addEventListener('click', startVideo);
         video.addEventListener('ended', endIntro);
         window.skipIntro = endIntro;
+
+        // 桌面端直接尝试自动播放
+        video.play().then(function() {
+          tapLayer.style.display = 'none';
+          skipBtn.style.display = 'block';
+        }).catch(function() {
+          // 自动播放失败（移动端），显示点击层
+          tapLayer.style.display = 'flex';
+        });
       })();
     </script>
     {{ end }}

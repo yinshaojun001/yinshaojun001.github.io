@@ -82,6 +82,53 @@ img { max-width: 100%; }
   object-fit: cover;
 }
 
+.brand-tap {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.brand-tap-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #333;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+.brand-tap-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #0066ff;
+  position: relative;
+  animation: tap-pulse 1.8s ease-in-out infinite;
+}
+
+.brand-tap-dot::after {
+  content: '▶';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0066ff;
+  font-size: 1rem;
+  padding-left: 3px;
+}
+
+@keyframes tap-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.12); opacity: 0.7; }
+}
+
 .brand-skip {
   position: absolute;
   bottom: 40px;
