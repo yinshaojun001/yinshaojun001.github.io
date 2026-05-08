@@ -36,7 +36,7 @@
       <p class="section-kicker">写作</p>
       <h2>最新文章</h2>
     </div>
-    <a class="text-link" href="{{ "/posts/" | relURL }}">查看全部</a>
+    <a class="text-link" href="{{ "/posts/" | relURL }}">查看全部 →</a>
   </div>
   <div class="post-grid">
     {{ range $posts }}
@@ -54,7 +54,7 @@
         <p class="section-kicker">关注</p>
         <h2>长期关注主题</h2>
       </div>
-      <a class="text-link" href="{{ "/tags/" | relURL }}">浏览标签</a>
+      <a class="text-link" href="{{ "/tags/" | relURL }}">浏览标签 →</a>
     </div>
     <div class="topic-grid">
       {{ range .Params.featured_topics }}
@@ -69,8 +69,28 @@
         <h2>这个博客在记录什么</h2>
       </div>
     </div>
-    <p>它既是我对已有工程经验的整理，也是我从 Java 后端工程师走向 AI Agent 工程师过程中的一份长期记录。这里不会只有“结论”，也会保留学习、试错和重新理解的过程。</p>
+    <p>它既是我对已有工程经验的整理，也是我从 Java 后端工程师走向 AI Agent 工程师过程中的一份长期记录。这里不会只有"结论"，也会保留学习、试错和重新理解的过程。</p>
     <a class="text-link" href="{{ "/about/" | relURL }}">更多关于我的背景与联系方式 →</a>
+  </div>
+</section>
+
+<section class="container inshocking-section">
+  <div class="inshocking-panel panel">
+    <div class="inshocking-header">
+      <div class="inshocking-header-left">
+        <span class="inshocking-kicker">个人资源站</span>
+        <span class="inshocking-title">inshocking.com</span>
+      </div>
+      <a class="inshocking-open-link" href="https://www.inshocking.com" target="_blank" rel="noreferrer">在新标签页打开 ↗</a>
+    </div>
+    <div class="inshocking-frame-wrap">
+      <iframe
+        src="https://www.inshocking.com"
+        title="inshocking.com 个人资源站"
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+      ></iframe>
+    </div>
   </div>
 </section>
 {{ end }}

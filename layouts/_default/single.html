@@ -1,12 +1,12 @@
 {{ define "main" }}
 <article class="container article-shell">
   <header class="article-header">
-    <p class="eyebrow">Article</p>
+    <p class="eyebrow">文章</p>
     <h1>{{ .Title }}</h1>
     <div class="article-meta">
       <span>{{ .Date.Format "2006-01-02" }}</span>
       {{ with .Params.tags }}
-        <span>{{ delimit . " · " }}</span>
+        {{ range . }}<span>{{ . }}</span>{{ end }}
       {{ end }}
       {{ with .Params.series }}
         <span>系列：{{ delimit . " / " }}</span>
