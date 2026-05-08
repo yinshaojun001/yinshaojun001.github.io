@@ -465,41 +465,42 @@ img { max-width: 100%; }
   font-size: 0.95rem;
 }
 
-/* ── INSHOCKING EMBED SECTION ── */
+/* ── INSHOCKING CARD SECTION ── */
 .inshocking-section {
   padding-top: 28px;
 }
 
-.inshocking-panel {
-  position: relative;
-  overflow: hidden;
-  padding: 0;
+.inshocking-card {
+  display: block;
+  background: var(--panel-soft);
   border: 1px solid rgba(241, 250, 140, 0.15);
   border-top: 3px solid var(--accent-4);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  text-decoration: none;
 }
 
-.inshocking-panel::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-4), transparent);
-  opacity: 0.6;
+.inshocking-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover), 0 0 24px rgba(241, 250, 140, 0.1);
+  border-color: rgba(241, 250, 140, 0.35);
 }
 
-.inshocking-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 28px 16px;
-  border-bottom: 1px solid rgba(241, 250, 140, 0.1);
-  background: rgba(241, 250, 140, 0.03);
+.inshocking-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 0;
+  min-height: 220px;
 }
 
-.inshocking-header-left {
+.inshocking-card-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px 32px 32px 28px;
 }
 
 .inshocking-kicker {
@@ -512,57 +513,53 @@ img { max-width: 100%; }
 
 .inshocking-title {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--text);
+  margin: 0;
+  line-height: 1.2;
 }
 
-.inshocking-open-link {
+.inshocking-desc {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.inshocking-cta {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--accent-4);
-  border: 1px solid rgba(241, 250, 140, 0.25);
-  padding: 6px 14px;
-  border-radius: 999px;
-  transition: background 0.15s, border-color 0.15s;
-  white-space: nowrap;
+  margin-top: 4px;
+  transition: text-shadow 0.15s;
 }
 
-.inshocking-open-link:hover {
-  background: rgba(241, 250, 140, 0.08);
-  border-color: rgba(241, 250, 140, 0.5);
-  color: var(--accent-4);
+.inshocking-card:hover .inshocking-cta {
+  text-shadow: 0 0 12px rgba(241, 250, 140, 0.5);
 }
 
-.inshocking-frame-wrap {
-  position: relative;
-  width: 100%;
-  height: 560px;
+.inshocking-preview {
+  overflow: hidden;
+  border-left: 1px solid rgba(241, 250, 140, 0.1);
   background: var(--bg-2);
 }
 
-.inshocking-frame-wrap iframe {
+.inshocking-preview img {
   width: 100%;
   height: 100%;
-  border: none;
+  object-fit: cover;
+  object-position: top left;
   display: block;
+  border: none;
+  border-radius: 0;
+  filter: brightness(0.9);
+  transition: filter 0.2s ease, transform 0.3s ease;
 }
 
-.inshocking-frame-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  background: var(--bg-2);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.88rem;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
+.inshocking-card:hover .inshocking-preview img {
+  filter: brightness(1);
+  transform: scale(1.02);
 }
 
 /* ── TERMS / TAGS ── */
@@ -907,8 +904,14 @@ img { max-width: 100%; }
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .inshocking-frame-wrap {
-    height: 420px;
+  .inshocking-card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .inshocking-preview {
+    border-left: none;
+    border-top: 1px solid rgba(241, 250, 140, 0.1);
+    height: 200px;
   }
 }
 
@@ -933,14 +936,8 @@ img { max-width: 100%; }
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .inshocking-frame-wrap {
-    height: 340px;
-  }
-
-  .inshocking-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .inshocking-card-text {
+    padding: 24px 20px;
   }
 }
 
