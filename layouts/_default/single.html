@@ -37,5 +37,7 @@
     {{ with .PrevInSection }}<a class="article-nav-link" href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ end }}
     {{ with .NextInSection }}<a class="article-nav-link" href="{{ .RelPermalink }}" style="text-align:right;">{{ .Title }} →</a>{{ end }}
   </nav>
+
+  {{ partial "comments.html" . }}
 </article>
 {{ end }}

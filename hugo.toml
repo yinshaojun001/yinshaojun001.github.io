@@ -14,6 +14,17 @@ canonifyURLs = false
   description = "以技术文章为主，兼顾个人介绍与长期积累。"
   mainSections = ["posts"]
 
+  [params.giscus]
+    repo = "yinshaojun001/yinshaojun001.github.io"
+    repoId = "R_kgDOPBwZBQ"
+    category = "Announcements"
+    categoryId = "DIC_kwDOPBwZBc4C8pAX"
+    mapping = "pathname"
+    reactionsEnabled = "1"
+    inputPosition = "bottom"
+    theme = "light"
+    lang = "zh-CN"
+
 [taxonomies]
   tag = "tags"
   series = "series"
