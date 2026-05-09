@@ -1,6 +1,6 @@
 +++
 title = '本周值得关注的 5 个个人技术作品：AI Agent 编排、上下文优化与多平台助手'
-date = 2026-05-09T20:00:00+08:00
+date = 2026-05-09T11:00:00+08:00
 draft = false
 slug = "inshocking-picks-v1"
 tags = ["精选", "AI Agent", "开源", "开发者工具", "CLI"]
