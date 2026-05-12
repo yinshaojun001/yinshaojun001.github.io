@@ -3,61 +3,29 @@
   <head>
     {{ partial "head.html" . }}
   </head>
-  <body>
+  <body{{ if .IsHome }} class="page-home"{{ end }}>
     {{ if .IsHome }}
-    <div id="brand-intro" class="brand-intro">
-      <video id="brand-video" muted playsinline>
+    <div class="hero-video-wrap" id="hero-video-wrap">
+      <video id="hero-video" autoplay muted loop playsinline>
         <source src="/brand.mp4" type="video/mp4">
       </video>
-      <div id="brand-tap" class="brand-tap">
-        <div class="brand-tap-hint">
-          <span class="brand-tap-dot"></span>
-          点击任意处开始
+      <div class="hero-overlay">
+        <div class="hero-overlay-inner">
+          <p class="hero-kicker">inshocking</p>
+        </div>
+        <div class="hero-scroll-hint" id="hero-scroll-hint">
+          <span class="hero-scroll-arrow">↓</span>
+          <span class="hero-scroll-text">向下滚动</span>
         </div>
       </div>
-      <button class="brand-skip" id="brand-skip-btn" style="display:none" onclick="skipIntro()">跳过</button>
     </div>
     <script>
       (function() {
-        var key = 'brand_seen_v1';
-        var seen = sessionStorage.getItem(key);
-        var intro = document.getElementById('brand-intro');
-        if (seen) {
-          intro.style.display = 'none';
-          return;
-        }
-        document.body.style.overflow = 'hidden';
-        var video = document.getElementById('brand-video');
-        var tapLayer = document.getElementById('brand-tap');
-        var skipBtn = document.getElementById('brand-skip-btn');
-
-        function endIntro() {
-          sessionStorage.setItem(key, '1');
-          intro.classList.add('brand-intro--out');
-          document.body.style.overflow = '';
-          setTimeout(function() { intro.style.display = 'none'; }, 600);
-        }
-
-        function startVideo() {
-          tapLayer.style.display = 'none';
-          skipBtn.style.display = 'block';
-          video.play().catch(function() {
-            endIntro();
-          });
-        }
-
-        tapLayer.addEventListener('click', startVideo);
-        video.addEventListener('ended', endIntro);
-        window.skipIntro = endIntro;
-
-        // 桌面端直接尝试自动播放
-        video.play().then(function() {
-          tapLayer.style.display = 'none';
-          skipBtn.style.display = 'block';
-        }).catch(function() {
-          // 自动播放失败（移动端），显示点击层
-          tapLayer.style.display = 'flex';
-        });
+        var hint = document.getElementById('hero-scroll-hint');
+        window.addEventListener('scroll', function() {
+          if (!hint) return;
+          hint.style.opacity = Math.max(0, 1 - window.scrollY / 120).toString();
+        }, { passive: true });
       })();
     </script>
     {{ end }}
