@@ -1,6 +1,6 @@
 +++
 title = '本周值得关注的 5 个技术作品：Agent 工程化、Rust 终端工具与 Agent 经济的雏形'
-date = 2026-05-18T11:00:00+08:00
+date = 2026-05-17T11:00:00+08:00
 draft = false
 slug = "inshocking-picks-v2"
 tags = ["精选", "AI Agent", "开源", "开发者工具", "CLI", "Zed", "Rust"]
