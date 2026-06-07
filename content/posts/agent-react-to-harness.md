@@ -1,6 +1,6 @@
 +++
 title = '我把 Agent 重构了一遍，因为它"没有家"'
-date = 2026-06-08T10:00:00+08:00
+date = 2026-06-07T20:00:00+08:00
 draft = false
 slug = "agent-react-to-harness"
 author = "尹绍钧"
