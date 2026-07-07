@@ -609,6 +609,7 @@ img { max-width: 100%; }
   color: var(--green);
   animation: blink 1.1s step-end infinite;
 }
+.footer-stats { color: var(--muted-2); font-size: 0.75rem; }
 
 .footer-sub {
   width: min(calc(100% - 48px), var(--max-width));
