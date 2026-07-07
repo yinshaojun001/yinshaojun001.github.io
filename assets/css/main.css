@@ -620,6 +620,115 @@ img { max-width: 100%; }
   opacity: 0.5;
 }
 
+.wechat-trigger {
+  cursor: pointer;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.wechat-trigger:hover {
+  color: var(--green);
+  opacity: 1;
+}
+
+.wechat-card {
+  display: none;
+  position: fixed;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  width: 280px;
+}
+
+.wechat-card.visible {
+  display: block;
+  animation: card-in 0.18s ease;
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.wechat-card-inner {
+  background: var(--bg-2);
+  border: 1px solid var(--green);
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 0 24px rgba(57, 255, 20, 0.15);
+}
+
+.wechat-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.wechat-card-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--green);
+}
+
+.wechat-card-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.wechat-card-close:hover { color: var(--text); }
+
+.wechat-id-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.wechat-id-value {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  letter-spacing: 0.04em;
+}
+
+.wechat-copy-btn {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #0d1117;
+  background: var(--green);
+  border: none;
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.wechat-copy-btn:hover { background: #52ff35; }
+.wechat-copy-btn.copied { background: var(--cyan); color: #0d1117; }
+
+.wechat-hint {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin: 0;
+  text-align: center;
+}
+
 /* ── LIST / ARCHIVE PAGE ── */
 .list-shell { padding-top: 40px; }
 

@@ -5,6 +5,51 @@
     <span class="footer-cursor">█</span>
   </div>
   <div class="footer-sub">
-    <span>done is better than perfect.</span>
+    <span class="wechat-trigger" onclick="toggleWechatCard()" title="添加作者微信">done is better than perfect.</span>
+  </div>
+
+  <!-- 微信卡片 -->
+  <div class="wechat-card" id="wechat-card">
+    <div class="wechat-card-inner">
+      <div class="wechat-card-head">
+        <span class="wechat-card-label">// 添加作者微信</span>
+        <button class="wechat-card-close" onclick="toggleWechatCard()" aria-label="关闭">✕</button>
+      </div>
+      <div class="wechat-id-row">
+        <span class="wechat-id-value" id="wechat-id">inShocking</span>
+        <button class="wechat-copy-btn" onclick="copyWechatId()" id="copy-btn">复制</button>
+      </div>
+      <p class="wechat-hint">微信搜索以上 ID 添加好友</p>
+    </div>
   </div>
 </footer>
+
+<script>
+(function() {
+  function toggleWechatCard() {
+    var card = document.getElementById('wechat-card');
+    card.classList.toggle('visible');
+  }
+  function copyWechatId() {
+    navigator.clipboard.writeText('inShocking').then(function() {
+      var btn = document.getElementById('copy-btn');
+      btn.textContent = '已复制 ✓';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = '复制';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+  window.toggleWechatCard = toggleWechatCard;
+  window.copyWechatId = copyWechatId;
+
+  document.addEventListener('click', function(e) {
+    var card = document.getElementById('wechat-card');
+    if (!card.classList.contains('visible')) return;
+    if (!card.contains(e.target) && !e.target.classList.contains('wechat-trigger')) {
+      card.classList.remove('visible');
+    }
+  });
+})();
+</script>
