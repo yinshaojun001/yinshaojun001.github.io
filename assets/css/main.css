@@ -610,6 +610,16 @@ img { max-width: 100%; }
   animation: blink 1.1s step-end infinite;
 }
 
+.footer-sub {
+  width: min(calc(100% - 48px), var(--max-width));
+  margin: 0 auto;
+  padding-bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted-2);
+  opacity: 0.5;
+}
+
 /* ── LIST / ARCHIVE PAGE ── */
 .list-shell { padding-top: 40px; }
 

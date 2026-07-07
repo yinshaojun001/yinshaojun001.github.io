@@ -1,5 +1,5 @@
 {{ define "main" }}
-{{ $posts := first 6 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
+{{ $posts := first 9 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
 {{ $allTags := .Site.Taxonomies.tags }}
 
 <div class="container">
