@@ -9,7 +9,7 @@
 - 首页与个人品牌表达
 - 技术文章内容
 - About 页面与作者信息
-- GitHub Pages 自动发布配置
+- 自建服务器与 GitHub Pages 自动发布配置
 
 当前博客的主方向是：
 
@@ -96,7 +96,10 @@ hugo new posts/my-new-post.md
 
 ## 自动发布方式
 
-当前博客通过 **GitHub Actions** 自动发布到 **GitHub Pages**。
+当前博客通过 **GitHub Actions** 自动发布到两个目标：
+
+- 自建站点：`https://blog.inshocking.com/`
+- GitHub Pages：`https://yinshaojun001.github.io/`
 
 工作流文件：
 
@@ -116,6 +119,15 @@ git push origin master
 
 只要 push 到 `master`，GitHub Actions 就会自动构建并部署站点。
 
+发布流程分两段：
+
+1. 使用 `https://blog.inshocking.com/` 作为 `baseURL` 构建，并通过 SSH + rsync 同步 `public/` 到服务器 `/var/www/blog/`
+2. 使用 GitHub Pages 输出的 `base_url` 重新构建，并部署到 GitHub Pages
+
+自建服务器的 Nginx 参考配置位于：
+
+- `blog.inshocking.com.conf`
+
 ## GitHub Pages 设置与查看发布结果
 
 第一次检查或排查发布时，去 GitHub 仓库中确认：
@@ -131,6 +143,7 @@ git push origin master
 
 线上地址：
 
+- `https://blog.inshocking.com/`
 - `https://yinshaojun001.github.io/`
 
 ## 历史文章迁移

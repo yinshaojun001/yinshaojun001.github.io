@@ -2,6 +2,7 @@
 .worktrees/
 .hugo_build.lock
 .venv/
+.DS_Store
 
 __pycache__/
 public/

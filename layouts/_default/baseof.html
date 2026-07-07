@@ -3,32 +3,7 @@
   <head>
     {{ partial "head.html" . }}
   </head>
-  <body{{ if .IsHome }} class="page-home"{{ end }}>
-    {{ if .IsHome }}
-    <div class="hero-video-wrap" id="hero-video-wrap">
-      <video id="hero-video" autoplay muted loop playsinline>
-        <source src="/brand.mp4" type="video/mp4">
-      </video>
-      <div class="hero-overlay">
-        <div class="hero-overlay-inner">
-          <p class="hero-kicker">inshocking</p>
-        </div>
-        <div class="hero-scroll-hint" id="hero-scroll-hint">
-          <span class="hero-scroll-arrow">↓</span>
-          <span class="hero-scroll-text">向下滚动</span>
-        </div>
-      </div>
-    </div>
-    <script>
-      (function() {
-        var hint = document.getElementById('hero-scroll-hint');
-        window.addEventListener('scroll', function() {
-          if (!hint) return;
-          hint.style.opacity = Math.max(0, 1 - window.scrollY / 120).toString();
-        }, { passive: true });
-      })();
-    </script>
-    {{ end }}
+  <body>
     <div class="site-shell">
       {{ partial "header.html" . }}
       <main class="main-shell">

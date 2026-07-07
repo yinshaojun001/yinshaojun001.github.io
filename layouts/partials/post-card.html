@@ -1,19 +1,25 @@
 <article class="post-card">
-  <div class="post-card-meta">
-    {{ with .Params.tags }}
-    <span class="tag">{{ index . 0 }}</span>
-    <span class="sep">·</span>
-    {{ end }}
-    <span>{{ .Date.Format "2006年01月02日" }}</span>
-    {{ with .ReadingTime }}
-    <span class="sep">·</span>
-    <span>{{ . }} 分钟阅读</span>
-    {{ end }}
+  <div class="post-card-code-preview">
+    <div class="code-line-numbers">
+      {{ range $i := (seq 1 6) }}<span>{{ $i }}</span>{{ end }}
+    </div>
+    <div class="code-lines">
+      {{ with .Params.tags }}<span class="cl-tag">// {{ index . 0 }}</span>{{ end }}
+      <span class="cl-keyword">public class </span><span class="cl-class">{{ .Title | truncate 28 }}</span><span> {</span>
+      <span class="cl-comment">    /** {{ .Date.Format "2006-01-02" }} **/</span>
+      <span>    <span class="cl-keyword">String</span> summary = <span class="cl-string">"{{ with .Summary }}{{ . | truncate 40 | plainify }}{{ else }}{{ .Plain | truncate 40 }}{{ end }}"</span>;</span>
+      <span>    <span class="cl-keyword">int</span> readTime = <span class="cl-number">{{ .ReadingTime }}</span>; <span class="cl-comment">// 分钟</span></span>
+      <span>}</span>
+    </div>
   </div>
-  <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-  {{ with .Summary }}
-  <p>{{ . }}</p>
-  {{ else }}
-  <p>{{ .Plain | truncate 120 }}</p>
-  {{ end }}
+  <div class="post-card-body">
+    <div class="post-card-meta">
+      {{ with .Params.tags }}<span class="post-tag">{{ index . 0 }}</span>{{ end }}
+      <span class="post-date">{{ .Date.Format "2006年01月02日" }}</span>
+      {{ with .ReadingTime }}<span class="post-read">{{ . }} 分钟阅读</span>{{ end }}
+    </div>
+    <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+    {{ with .Summary }}<p>{{ . | truncate 80 }}</p>{{ else }}<p>{{ .Plain | truncate 80 }}</p>{{ end }}
+    <a class="post-card-link" href="{{ .RelPermalink }}">阅读全文 →</a>
+  </div>
 </article>

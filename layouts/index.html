@@ -1,94 +1,118 @@
 {{ define "main" }}
-{{ $posts := first 8 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
+{{ $posts := first 6 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
+{{ $allTags := .Site.Taxonomies.tags }}
 
 <div class="container">
-  <div class="author-intro">
-    <div class="author-intro-inner">
-      <div class="author-intro-text">
-        <h1>{{ .Params.hero_title | default .Site.Title }}</h1>
-        <p class="tagline">{{ .Params.hero_intro | default .Site.Params.description }}</p>
-        <div class="author-meta-row">
-          <span>北京</span>
-          <span class="author-meta-sep">·</span>
-          <a href="https://github.com/yinshaojun001" target="_blank" rel="noreferrer">GitHub</a>
-          <span class="author-meta-sep">·</span>
-          <a href="mailto:yinshaojun001@gmail.com">Email</a>
-          <span class="author-meta-sep">·</span>
-          <a href="{{ "/about/" | relURL }}">关于我</a>
-        </div>
+
+  <!-- ── HERO ── -->
+  <section class="hero-section">
+    <div class="hero-left">
+      <div class="hero-prompt">
+        <span class="hero-dollar">$</span>
+        <span class="hero-cmd">whoami</span>
+      </div>
+      <h1 class="hero-title">{{ .Site.Title }}</h1>
+      <p class="hero-subtitle">{{ .Params.hero_title | default .Site.Params.tagline }}</p>
+      <p class="hero-desc">{{ .Params.hero_intro | default .Site.Params.description }}</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="{{ "/posts/" | relURL }}">浏览文章 &gt;_</a>
+        <a class="btn-ghost" href="{{ "/about/" | relURL }}">关于我 &gt;_</a>
+      </div>
+      <div class="hero-terminal-line">
+        <span class="ht-prompt">&gt;</span>
+        <span class="ht-code">System.out.println(<span class="ht-str">"坚持构建未来。"</span>);</span>
+        <span class="ht-cursor">█</span>
       </div>
     </div>
-  </div>
+    <div class="hero-right">
+      <div class="hero-ascii">
+<pre class="ascii-art">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;
+&#x2588;&#x2588; &#x2588;&#x2588;      &#x2588;&#x2588; &#x2588;&#x2588;
+&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;  &#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;
+&#x2588;&#x2588;      &#x2588;&#x2588;      &#x2588;&#x2588;
+&#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;
+&#x2588;&#x2588;&#x2588;&#x2588;  &#x2588;&#x2588;  &#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;
+&#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;
+&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;      &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;
+&#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;  &#x2588;&#x2588;&#x2588;&#x2588;
+&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</pre>
+        <p class="ascii-caption">// AI · JAVA · AGENT</p>
+      </div>
+    </div>
+  </section>
 
+  <!-- ── MAIN LAYOUT ── -->
   <div class="home-layout">
+
+    <!-- 文章列表 -->
     <main class="home-feed">
-      <p class="feed-label">最新文章</p>
-      <div class="post-feed">
+      <div class="section-header">
+        <span class="section-arrow">&gt;</span>
+        <h2 class="section-title">精选文章</h2>
+        <a class="section-more" href="{{ "/posts/" | relURL }}">查看全部文章 →</a>
+      </div>
+      <div class="post-grid">
         {{ range $posts }}
           {{ partial "post-card.html" . }}
         {{ else }}
-          <div class="empty-state">文章会在这里出现。</div>
-        {{ end }}
-        {{ if gt (len (where .Site.RegularPages "Section" "posts")) 8 }}
-        <div style="padding: 24px 0;">
-          <a href="{{ "/posts/" | relURL }}" style="font-size:0.9rem;color:var(--accent-blue);font-weight:500;">查看全部文章 →</a>
-        </div>
+          <div class="empty-state">文章将在这里出现。</div>
         {{ end }}
       </div>
     </main>
 
+    <!-- 侧边栏 -->
     <aside class="home-sidebar">
-      <div class="sidebar-section">
-        <p class="sidebar-label">作者</p>
-        <div class="sidebar-author">
-          <span class="sidebar-author-name">{{ .Params.profile_name | default .Site.Params.author }}</span>
-          <span class="sidebar-author-role">{{ .Params.profile_role | default .Site.Params.description }}</span>
-          <div class="sidebar-links">
-            <a href="https://github.com/yinshaojun001" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="mailto:yinshaojun001@gmail.com">Email</a>
-            <a href="{{ "/about/" | relURL }}">完整介绍</a>
-          </div>
+
+      <!-- 关于 -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">
+          <span class="sidebar-icon">○</span>
+          <span class="sidebar-card-title">关于 {{ .Site.Title }}</span>
+        </div>
+        <p class="sidebar-card-desc">{{ .Params.profile_role | default .Site.Params.description }}</p>
+        <div class="sidebar-highlight">
+          <span class="sh-arrow">&gt;</span>
+          <span>{{ index (.Params.focus_points | default (slice "从 Java 后端走向 AI Agent 工程师。")) 0 }}</span>
+        </div>
+        <div class="sidebar-social">
+          <a href="https://github.com/yinshaojun001" target="_blank" rel="noreferrer" aria-label="GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+          <a href="mailto:yinshaojun001@gmail.com" aria-label="Email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
         </div>
       </div>
 
-      <hr class="sidebar-divider">
-
-      {{ with .Params.featured_topics }}
-      <div class="sidebar-section">
-        <p class="sidebar-label">关注主题</p>
-        <div class="topic-list">
-          {{ range . }}
-          <span class="topic-pill">{{ . }}</span>
+      <!-- 标签 -->
+      {{ if $allTags }}
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">
+          <span class="sidebar-icon">◈</span>
+          <span class="sidebar-card-title">标签</span>
+        </div>
+        <div class="tag-cloud">
+          {{ range $name, $pages := $allTags }}
+          <a class="tag-chip" href="{{ "/tags/" | relURL }}{{ $name | urlize }}/">
+            {{ $name }} <span class="tag-count">({{ len $pages }})</span>
+          </a>
           {{ end }}
         </div>
+        <a class="sidebar-more" href="{{ "/tags/" | relURL }}">查看全部标签 →</a>
       </div>
-      <hr class="sidebar-divider">
       {{ end }}
 
-      <div class="sidebar-section">
-        <p class="sidebar-label">这个博客</p>
-        <p style="font-size:0.88rem;color:var(--muted);line-height:1.65;margin:0 0 12px;">它既是我对已有工程经验的整理，也是我从 Java 后端工程师走向 AI Agent 工程师过程中的一份长期记录。</p>
-        <a href="{{ "/about/" | relURL }}" style="font-size:0.85rem;color:var(--accent-blue);font-weight:500;">了解更多 →</a>
+      <!-- RSS -->
+      <div class="sidebar-card sidebar-card-terminal">
+        <div class="sidebar-card-head">
+          <span class="sidebar-icon">&gt;_</span>
+          <span class="sidebar-card-title">持续更新</span>
+        </div>
+        <p class="sidebar-card-desc">获取最新文章与技术洞察，通过 RSS 订阅。</p>
+        <a class="btn-primary btn-sm" href="{{ "/index.xml" | relURL }}">订阅 RSS &gt;_</a>
       </div>
-    </aside>
-  </div>
-</div>
 
-<div class="container inshocking-section">
-  <div class="inshocking-header">
-    <div class="inshocking-header-left">
-      <span class="inshocking-kicker">个人资源站</span>
-      <span class="inshocking-title">inshocking.com</span>
-    </div>
-    <a class="inshocking-open-link" href="https://www.inshocking.com" target="_blank" rel="noreferrer">在新标签页打开 ↗</a>
-  </div>
-  <div class="inshocking-frame-wrap">
-    <iframe
-      src="https://www.inshocking.com"
-      title="inshocking.com 个人资源站"
-      loading="lazy"
-      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-    ></iframe>
+    </aside>
   </div>
 </div>
 {{ end }}
