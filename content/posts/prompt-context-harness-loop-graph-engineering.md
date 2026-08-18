@@ -5,7 +5,7 @@ draft = false
 slug = "prompt-context-harness-loop-graph-engineering"
 author = "尹绍钧"
 tags = ["AI Agent", "Prompt Engineering", "Context Engineering", "Harness Engineering", "Loop Engineering", "Graph Engineering"]
-summary = "Prompt、Context、Harness、Loop、Graph 不是互相替代的流行词，而是从一次模型调用扩展到可恢复、可验证、可编排 Agent 系统的五层工程视角。"
+summary = "从 Prompt 到 Graph 的 Agent 工程拆解：上下文装配、工具调用、权限与状态、任务循环、可持久化图编排，逐层解释它们各自在运行时做什么。"
 +++
 
 # 从 Prompt 到任务图：Agent 工程的五次控制权迁移
@@ -171,7 +171,7 @@ Harness 并不要求「用文件替代数据库」。工作空间适合让模型
 
 这次排障里，我其实承担了四个角色：触发下一步、执行工具、反馈观察结果、判断是否结束。我成了 AI 循环里的一环。
 
-Loop Engineering 讨论的，就是怎么把这部分机械但重要的职责从人手里移到系统里。它不是把 Agent 放进一个无限循环，也不等同于定时调用一次模型。一个可运行的 Loop 至少要有下面这条闭环：
+这里处理的是怎么把这部分机械但重要的职责从人手里移到系统里。它不等同于定时调用一次模型，必须有下面这条受控闭环：
 
 ```text
 触发
@@ -288,6 +288,510 @@ Graph：控制复杂协作如何转移状态并留下证据。
 这条路径最后落到的不是某个框架，也不是一份越来越长的 Prompt。一个能落地的 Agent 系统，至少要能解释清楚：本次决策用了什么上下文，谁授权了工具调用，结果如何验证，失败从哪里恢复，成本为什么不会失控，以及问题发生时能追到哪一个节点。
 
 当这些问题都有明确答案时，模型能力才真正进入工程系统，而不是停留在一次漂亮的演示里。
+
+## 七、从概念到运行时：先看一条完整调用
+
+前面五层说的是边界。要把它们落到系统里，先不要从「我要做一个 Agent」开始想，而是追一条真实请求。
+
+假设用户说：
+
+```text
+查一下 ORD-2026-0818 的状态，如果已发货就通知负责人。
+```
+
+这是一串带状态的事件：
+
+```text
+HTTP 请求
+  -> 创建 task / attempt
+  -> 按预算装配上下文
+  -> LLM 提出 query_order 调用
+  -> Runtime 校验、授权、执行
+  -> 工具结果回写上下文
+  -> LLM 决定是否提出 send_notification
+  -> 风险策略要求人工确认或自动执行
+  -> 校验通知结果
+  -> 持久化 task、trace、证据和最终答复
+```
+
+五类工程分别在这条链路上插入控制点。Prompt 约束模型如何表达意图；Context 决定模型凭什么做判断；Harness 接管调用、权限、状态和日志；Loop 决定任务是否继续；Graph 则在出现并行、分支和人工关口后，规定状态往哪里流。
+
+下面按实现对象拆开。
+
+## 八、Prompt Engineering：把自然语言变成可测试的调用契约
+
+Prompt 工程最容易被误解成「会写几句角色设定」。生产里真正需要维护的是一个版本化契约：输入变量是什么，模型应输出哪种结构，允许哪些工具，失败时该如何降级，以及改动后如何回归。
+
+### 1. Prompt 的职责边界
+
+一个系统 Prompt 适合放四类稳定信息：
+
+- 角色和任务范围，例如订单助手只能解释订单和售后规则；
+- 决策规则，例如遇到缺失订单号时先追问，不能编造订单状态；
+- 输出协议，例如回答必须包含引用的订单号和状态时间；
+- 工具选择说明，例如 `query_order` 用于查询，`send_notification` 只能在订单已发货后使用。
+
+它不适合承载实时订单、所有历史对话、原始知识库全文、访问令牌和权限规则。这些内容变化快、体积大，或者必须由代码强制执行。把它们写进 Prompt，模型未必遵守，系统也无法审计谁在什么条件下获得了什么权限。
+
+### 2. Prompt 模板应是配置对象，不是一段字符串
+
+最小的生产配置至少需要这些字段：
+
+```yaml
+id: order-assistant
+version: 2026-08-18.3
+variables:
+  tenant_name: string
+  locale: enum[zh-CN, en-US]
+model:
+  name: gpt-5
+  temperature: 0.1
+output_contract:
+  mode: text
+tool_policy:
+  allowed: [query_order, send_notification]
+evaluation_suite: order-assistant-regression-v4
+```
+
+项目中的 `PromptService` 已经体现了这个思路。Agent 可以使用数据库中的默认 Prompt，也可以对单次请求做 `REPLACE` 或 `APPEND`，再通过 `${key}` 和默认值渲染变量。这里有两个容易忽略的约束：
+
+1. `REPLACE` 只能开放给受信调用方。否则用户输入一段 Prompt 就能覆盖系统规则。
+2. 变量渲染必须区分可信配置和不可信用户数据。用户昵称、网页内容、检索文本只能作为数据插入，不能拼进规则段落后获得同等优先级。
+
+### 3. 输出约束分三层
+
+很多系统只做第一层，后两层缺失后便会在生产中出问题。
+
+| 层次 | 解决的问题 | 示例 |
+| --- | --- | --- |
+| 提示约束 | 模型知道想要什么 | 「只输出 JSON」 |
+| Schema 约束 | 输出能否被解析 | `status` 必须是枚举、`order_id` 必填 |
+| 领域校验 | 输出在业务里是否成立 | 订单是否存在、调用者是否有权查看 |
+
+`strict: true` 的 Function Calling 或 Structured Output 能大幅降低 JSON 解析失败，但它只保证结构。例如 `{ "order_id": "ORD-404" }` 完全符合 Schema，仍然可能指向不存在的订单。模型输出永远应该被 Runtime 当成「待执行的建议」，而不是已经可信的事实。
+
+一个工具调用的服务端入口通常像这样：
+
+```java
+ToolRequest request = parseModelToolCall(modelOutput);
+schemaValidator.validate(request.arguments());
+
+Order order = orderService.requireExists(request.orderId());
+permissionService.checkCanRead(principal, order.tenantId());
+
+AuditEvent audit = auditLog.begin(taskId, request, principal);
+ToolResult result = orderService.query(order.id());
+auditLog.finish(audit, result.status());
+```
+
+模型负责生成 `ToolRequest`，没有一行权限逻辑应该依赖模型「记得遵守」。
+
+### 4. Prompt 的测试单位是用例集
+
+Prompt 改一个词就可能改变工具选择、拒答边界和输出字段。把它当成配置改动后，需要像接口一样回归。一个实用的评测集至少包含：
+
+- 正常样本：有完整订单号、权限正常；
+- 模糊样本：订单号缺失或格式错误，期望追问；
+- 负向样本：跨租户订单、已取消订单、无权通知；
+- 注入样本：订单备注或网页文本里出现「忽略之前指令」；
+- 工具样本：同一任务中多个工具可选时，是否选到正确工具；
+- 格式样本：输出能否通过 Schema，是否带必填字段。
+
+评测指标不应只有「回答像不像人」。至少记录工具选择准确率、参数合法率、Schema 通过率、拒绝正确率、任务完成率、平均 token 和平均时延。版本发布先跑离线评测，再灰度到小流量；出现回归时，能够回滚到 Prompt 的具体版本。
+
+## 九、Context Engineering：一次调用的 token 预算与事实供应链
+
+Context Engineering 通常从一个 Context Builder 开始实现。它接收任务、用户、租户、Session 和工具权限，输出一组有顺序的消息及其 token 账本。
+
+### 1. 先算预算，再装配内容
+
+模型窗口不是一个可以随意填满的盒子。必须预留输出和工具调用空间：
+
+```text
+input_budget = model_context_limit
+             - reserved_output_tokens
+             - safety_margin
+
+system + tools + session + memory + retrieval + user_input
+             <= input_budget
+```
+
+如果模型窗口是 128K，最大输出预留 8K，安全余量 4K，那么输入侧最多只能用 116K。工具定义也占 token；工具越多，留给业务事实的空间越少。很多「RAG 不准」其实是检索结果被工具 Schema 和无关历史挤到窗口尾部，模型没有稳定关注到它。
+
+建议在 Trace 中记录每一层的 token 数，而不是只记录总数：
+
+```json
+{
+  "system": 1830,
+  "tool_schemas": 4260,
+  "session": 6120,
+  "memory": 840,
+  "retrieval": 7250,
+  "user_input": 112,
+  "reserved_output": 8192
+}
+```
+
+没有这份账本，排查上下文溢出只能猜。
+
+### 2. Context Builder 的建议顺序
+
+下面不是唯一顺序，但每一层都要有来源、权限和上限：
+
+```text
+1. 不可覆盖的系统规则与安全策略
+2. 当前任务的目标、约束和已知状态
+3. 可调用工具的精简 Schema
+4. 本 Session 最近的原始消息与结构化摘要
+5. 选出的长期记忆
+6. 经过过滤和重排的 RAG 证据
+7. 当前用户输入
+8. 上一轮工具结果
+```
+
+实现时不要拼接一个巨大的字符串。应该保留每段的类型、来源、可信级别和 token 数，直到适配具体模型 API 时再序列化。这样才能做逐层截断、删除一段低分检索结果，或者把工具大结果换成引用。
+
+```python
+segments = [
+    Segment("policy", system_rules, TRUSTED, priority=100),
+    Segment("task_state", state_summary, TRUSTED, priority=95),
+    Segment("tools", tool_schemas, TRUSTED, priority=90),
+    Segment("session", recent_history, USER_DERIVED, priority=80),
+    Segment("memory", selected_memories, USER_DERIVED, priority=70),
+    Segment("rag", evidence, EXTERNAL_UNTRUSTED, priority=60),
+    Segment("user", user_input, USER_DERIVED, priority=85),
+]
+packed = budgeter.pack(segments, input_budget)
+```
+
+`EXTERNAL_UNTRUSTED` 不是注释，而应影响 Prompt 处理方式。来自网页、文档、工具返回的内容只能作为证据，不能改变系统规则、扩大权限或要求模型泄露凭证。
+
+### 3. RAG 不是向量检索的一次函数调用
+
+一个可控的检索管线通常包括：
+
+```text
+查询改写
+  -> 按 tenant / ACL / 文档状态过滤
+  -> 向量召回 + 关键词召回
+  -> 去重与相邻块合并
+  -> rerank
+  -> 按 token 预算打包
+  -> 生成可回溯引用
+```
+
+最先做的是权限过滤，而不是相似度排序。假设用户 A 和用户 B 都问「本月价格政策」，向量库可能把两人的内部文档都召回。若在 top-K 后再做 ACL 过滤，既会浪费计算，也可能在日志或 rerank 层泄露标题和摘要。过滤条件要进入检索条件本身。
+
+切块也不是越小越好。块太小会丢掉条件与例外，块太大则塞不进窗口。对规章制度类文档，通常要把标题、段落路径、版本、生效日期和权限标签与正文一起保存。模型最终回答时应能带上文档 ID、段落和版本，而不是只说「根据知识库」。
+
+### 4. 记忆是读写系统，不是对话备份
+
+长期记忆至少要分清四类数据：
+
+| 类型 | 例子 | 写入规则 |
+| --- | --- | --- |
+| 用户偏好 | 喜欢简洁回答 | 用户明确表达或多次稳定行为 |
+| 项目事实 | 服务使用 Java 17 | 有来源、可被当前任务复用 |
+| 经验/反馈 | 这个接口必须先查权限 | 有 Why 和 How，能指导以后动作 |
+| 活动记录 | 刚查过一次订单 | 通常不写入长期记忆 |
+
+你在 Claude Code 记忆复盘里指出的「只记推导不出来的东西」很关键。工具能实时查到的技能列表、临时订单状态、一次性报表不该无脑写入。否则记忆库很快堆满过期的活动日志，召回出来反而污染上下文。
+
+一个更可靠的写入流程是：
+
+```text
+本轮 QA 与工具结果
+  -> 记忆候选抽取
+  -> LLM / 规则判定 WRITE、UPDATE、MERGE、SKIP
+  -> 查重与冲突检测
+  -> 带来源、时间、作用域写入
+  -> 定期整合与过期标记
+```
+
+读取同样需要两段式：先用 metadata 和语义检索拿到候选，再由轻量模型或规则从 top-K 中挑选少量真正相关的内容。把 20 条相似记忆全部塞进 Prompt，通常比不塞更糟。
+
+### 5. 压缩保存的是任务状态，不是文学摘要
+
+短期历史超预算时，不能简单把旧消息压成一段「用户讨论了订单」。下次调用真正需要的是可执行状态：
+
+```json
+{
+  "goal": "查询 ORD-2026-0818 并在已发货时通知负责人",
+  "constraints": ["不得跨租户读取", "通知需要审批"],
+  "completed": ["已验证订单存在", "订单状态=SHIPPED"],
+  "artifacts": ["order_snapshot://task/42/v1"],
+  "pending": ["等待通知审批"],
+  "last_error": null
+}
+```
+
+这类结构化摘要可以进入上下文，也可以直接成为任务状态。二者不要混为一谈：前者服务模型推理，后者服务恢复和编排。
+
+工具结果过大时也不应原样回填。例如一次日志查询返回十万行，Runtime 应把原始结果存到对象存储或任务目录，生成一个包含路径、摘要、行数、hash 和查询条件的 `ToolResultRef`。模型需要细节时再通过受控工具分页读取。这样既不撑爆窗口，也保留可审计的原始证据。
+
+## 十、Harness Engineering：Agent Runtime 的控制面
+
+Harness 不是一个 Prompt 文件夹，也不是任意 Agent 框架的别名。它是把模型、上下文、工具和状态接成一个受控运行时的控制面。模型有权提出下一步；Harness 决定这一步能否发生、在哪里发生、失败如何恢复、留下什么证据。
+
+### 1. Runtime 至少要维护哪些实体
+
+建议把对话、任务和工具调用拆开存。一个最低限度的数据模型如下：
+
+```text
+Task
+  task_id, tenant_id, principal_id, goal, status, budget, graph_version
+
+Attempt
+  attempt_id, task_id, sequence, model, context_snapshot_id, started_at
+
+ToolCall
+  call_id, attempt_id, tool_name, arguments, risk_level,
+  idempotency_key, status, result_ref
+
+Checkpoint
+  checkpoint_id, task_id, node, state_json, artifact_refs, resume_token
+
+AuditEvent
+  event_id, task_id, actor, action, policy_decision, timestamp
+```
+
+`Session` 是聊天连续性的容器，`Task` 是业务目标的容器，`Attempt` 是某一次模型或节点执行，不能只用一个 `conversation_id` 把它们混在一起。否则任务跨天恢复、同一用户并发任务、审批等待和重试都会变得不可区分。
+
+### 2. Hook/Event 不只是扩展点
+
+你的 Harness 文章里使用了 Session、Context、Skill、Compaction、Tool Result 等 Hook。把它们串起来后，一次运行可以形成明确生命周期：
+
+```text
+onTaskStart
+  -> restoreCheckpoint
+  -> resolvePrincipalAndPolicy
+  -> assembleContext
+  -> beforeModelCall
+  -> afterModelCall
+  -> beforeToolAuthorize
+  -> beforeToolExecute
+  -> afterToolExecute
+  -> persistCheckpoint
+  -> onTaskFinish
+```
+
+每个 Hook 的输入和副作用必须清楚。例如 `assembleContext` 可以读工作空间和记忆，但不该直接发通知；`beforeToolAuthorize` 可以拒绝调用或要求审批，但不该修改业务数据；`afterToolExecute` 负责标准化结果、落审计和上下文逐出。
+
+Hook 没有边界就会重新变成补丁堆。建议规定：Hook 不能绕过核心状态机，所有副作用都必须产生 `AuditEvent`，失败时按明确的错误类型返回给调度器。
+
+### 3. 工具调用的信任边界
+
+Function Calling 与 MCP 分别覆盖不同链路。
+
+```text
+模型 API：模型根据 Tool Schema 生成 tool_call
+Host / Runtime：验证、授权、限流、审计、调度
+MCP Client：与具体 MCP Server 维持协议连接
+MCP Server：访问订单、文件、数据库或第三方 API
+```
+
+模型不会直接连 MCP Server，也不能因为模型生成了 JSON 就直接执行。对每个工具调用至少执行八个检查：工具是否在当前 Agent 白名单、参数是否符合 Schema、业务对象是否存在、调用者是否拥有权限、风险等级是否允许自动执行、配额是否充足、是否具备幂等条件、是否需要审计/审批。
+
+写操作的重试是最常见的事故点。网络超时后，系统不知道「服务没收到请求」还是「服务已经执行但响应丢了」。没有幂等键就再次发一遍 `send_notification`，用户会收到两条消息。正确做法是 Runtime 为每个可重试写操作生成稳定的 `idempotency_key`，下游服务按此去重；没有幂等保证的写操作，超时后应进入人工或查询确认，而不是盲重试。
+
+### 4. 权限是能力令牌，不是提示词规则
+
+可以把工具分成只读、受控写入和高危操作三类：
+
+| 风险 | 示例 | Runtime 行为 |
+| --- | --- | --- |
+| 绿色 | 查订单、读文档、搜索日志 | 允许自动执行，限流并审计 |
+| 黄色 | 发通知、创建草稿、更新字段 | 展示关键参数，策略或用户确认 |
+| 红色 | 删除数据、改权限、执行生产命令 | 强制人工审批、短时授权、完整审计 |
+
+授权应绑定 `principal + tenant + task + tool + resource scope + expiry`。不能只给 Agent 一个永久的「管理员 Token」。一段被网页内容污染的上下文可能诱导模型申请危险工具；真正阻止它的应是 Runtime 的授权策略和下游服务的二次鉴权。
+
+### 5. 可观测性要能还原一次决策
+
+一次任务至少要形成一棵 Trace：
+
+```text
+task:42
+  attempt:1
+    context.build (tokens=14212)
+    llm.call (model=gpt-5, latency=2.1s)
+    tool.query_order (status=ok, latency=83ms)
+  attempt:2
+    policy.check_notification (decision=approval_required)
+    checkpoint.save
+```
+
+日志应避免直接落敏感正文和凭证，但需要能定位到上下文快照、Prompt 版本、模型版本、工具版本、输入摘要、输出摘要、策略决策、token、耗时和费用。否则发现「模型为什么发错通知」时，只能看到最终聊天文本，无法复盘哪一层供给了错误事实。
+
+## 十一、Loop Engineering：一个可持续任务需要状态机、评估器和预算
+
+一个可运行的 Loop 需要让每一轮执行都有合法状态、可验证进展和可恢复退出，远不只是写一个 `while True`。
+
+### 1. 先画任务状态机
+
+一个通用任务可以有下面这些状态：
+
+```text
+PENDING -> RUNNING -> WAITING_APPROVAL -> RUNNING
+                 |         |
+                 v         v
+              RETRYING   CANCELLED
+                 |
+                 v
+            SUCCEEDED / FAILED / EXHAUSTED
+```
+
+`WAITING_APPROVAL` 不是失败；它表示模型已经准备好副作用操作，但执行权交给了人。`EXHAUSTED` 也要和 `FAILED` 区分：前者可能是耗尽 token、轮次或时间预算，后者是确定性业务错误。
+
+调度器取任务时要用租约或乐观锁，避免两个 worker 同时执行同一轮：
+
+```sql
+update task
+set status = 'RUNNING', lease_owner = :worker, lease_until = :deadline
+where task_id = :id
+  and status in ('PENDING', 'RETRYING')
+  and (lease_until is null or lease_until < now());
+```
+
+这不是把传统分布式系统知识搬进来凑名词。Agent 任务本质上也是可能重试、重复投递、进程宕机的异步任务；没有租约和幂等性，Loop 在故障时很容易双跑。
+
+### 2. 每一轮必须返回结构化结论
+
+不要让 Agent 用一句「我已经完成」决定循环是否结束。每轮执行结束后，交给评估器一个结构化结果：
+
+```json
+{
+  "progress": "made_progress",
+  "evidence": ["health://memos=up", "health://milvus=up"],
+  "next_action": "verify_registration",
+  "terminal": false,
+  "retryable": true,
+  "reason": "服务已重启，尚未验证业务注册"
+}
+```
+
+评估器优先使用确定性信号：测试是否通过、健康检查是否为 200、数据库记录是否更新、指标是否低于阈值。只有无法完全形式化的质量判断，才交给独立模型或人工。生成者和评估者最好分离，至少不能让同一轮模型靠自我陈述宣布成功。
+
+### 3. 重试策略取决于错误类别
+
+| 错误类别 | 例子 | 是否自动重试 |
+| --- | --- | --- |
+| 瞬态错误 | 429、网络超时、临时 5xx | 可以，指数退避并设上限 |
+| 资源不足 | token 预算、并发配额耗尽 | 暂停或降级，不应立即重试 |
+| 参数错误 | 订单号格式错、Schema 不通过 | 不重试，应追问或修正 |
+| 权限错误 | 没有租户权限 | 不重试，转审批或拒绝 |
+| 业务冲突 | 状态已变化 | 重新读取事实后决定下一步 |
+
+把所有异常都喂回模型让它「再试一次」会让 Loop 变成昂贵的随机重试器。Runtime 应先分类错误，再决定重试、补偿、追问、转人工还是终止。
+
+### 4. 预算也应是状态的一部分
+
+Loop 预算至少包括轮次、墙钟时间、模型 token、工具次数和金额。每次调用前扣减或预留，不能等到结束后才发现超支：
+
+```python
+if state.rounds >= policy.max_rounds:
+    return exhaust("max_rounds")
+if state.cost_usd + estimate(next_call) > policy.max_cost_usd:
+    return exhaust("cost_budget")
+if now() > state.deadline:
+    return exhaust("deadline")
+```
+
+autoresearch 的固定五分钟、单文件修改和统一 `val_bpb` 指标之所以有效，正是因为它把可搜索空间、单轮成本和验收函数固定了。少了其中任何一个，系统都无法自动判断该保留、回滚还是继续试验。
+
+## 十二、Graph Engineering：把复杂任务变成可持久化的状态转移
+
+Loop 只有一条线时，状态机和调度器足够。出现并行检索、条件分支、多个子 Agent、人工审批、失败补偿时，任务关系不再是一条线，才需要图。
+
+### 1. 图中的三个一等公民：State、Node、Edge
+
+图不是把流程画成框和箭头。可执行图至少有：
+
+- `State`：所有节点共享、可序列化、可检查点恢复的数据；
+- `Node`：接受 State 的一部分，产出明确状态增量的函数或 Agent；
+- `Edge`：从一个节点到另一个节点的转移规则，可能是固定边、条件边、扇出或汇聚。
+
+以调研任务为例，可以先定义状态，而不是先创建 Agent：
+
+```python
+class ResearchState(TypedDict):
+    query: str
+    constraints: dict
+    candidates: list[Candidate]
+    notes: dict[str, Note]
+    coverage: CoverageReport | None
+    report_path: str | None
+    pending_approval: bool
+    errors: list[TaskError]
+```
+
+然后让每个节点有单一职责：`discover` 只生成候选项，`analyze` 只产生带来源的笔记，`coverage_check` 只计算覆盖缺口，`write_report` 只消费已通过的材料。节点不能既搜索、又写报告、又决定是否发布，否则失败重试和测试边界都会模糊。
+
+### 2. 边决定什么可以由模型判断，什么必须确定
+
+条件边是 Agent 图最容易失控的地方。应先把可形式化的路由写成代码：
+
+```python
+def route_after_coverage(state: ResearchState) -> str:
+    if state["coverage"].critical_sources_missing:
+        return "discover"
+    if state["coverage"].score < 0.8:
+        return "analyze"
+    return "write_report"
+```
+
+模型可以在 `discover` 节点判断「该搜哪些关键词」，但「覆盖分数低于 0.8 必须补搜」适合由确定性边控制。风险操作也一样：模型可以提出发布建议，边必须把它路由到 `WAITING_APPROVAL`，而不是直接执行。
+
+### 3. 并行需要扇出、汇聚与去重规则
+
+多 Agent 的常见事故来自并行结果同时写入同一状态。一个正确的扇出/汇聚模型要先说明：
+
+```text
+discover
+  -> fan-out: 每个候选来源一个 analyze task
+  -> fan-in: 收齐成功结果，允许部分失败
+  -> dedupe: 按 canonical URL / source_id 去重
+  -> reduce: 生成 coverage report
+```
+
+汇聚时要定义部分失败语义：20 个来源中 2 个抓取超时，报告能否继续？哪些来源是必须项？重试后如何避免同一 URL 生成两份笔记？这些是图状态与 reducer 的职责，不能依赖主 Agent 记住。
+
+### 4. Checkpoint 与补偿
+
+图系统需要在节点边界保存检查点。崩溃后，从最后成功节点恢复，而不是从头让模型再做一遍。对有副作用的节点，还要有补偿策略：
+
+```text
+create_draft -> upload_attachment -> publish
+      |                |               |
+      v                v               v
+delete_draft     delete_attachment   unpublish
+```
+
+这和 Saga 的思路类似：跨系统操作无法依赖单一数据库事务时，每个已完成动作都要定义可撤销、可确认或可人工处理的后续路径。发送到外部群的消息这类动作无法真正补偿，应在图中经过审批后再执行，不能把补偿寄托在事后处理上。
+
+### 5. Graph、Workflow 与自由 Agent 的分工
+
+| 问题特征 | 更合适的承载方式 |
+| --- | --- |
+| 输入输出稳定、分支有限 | 传统 Workflow / 代码状态机 |
+| 某一步需要阅读、归纳、选择检索策略 | 受约束的 Agent Node |
+| 多个节点有并行、回路、持久化恢复 | State Graph |
+| 需要实际修改外部系统 | Graph 中的审批边 + Harness 授权 |
+
+图不该替代模型推理，模型也不该替代状态机。Graph 管确定性骨架，Agent Node 处理无法在设计期穷举的判断，Harness 管一切外部副作用。三者分开，才可能测、查、重放和演进。
+
+## 十三、落地顺序：不要从多 Agent 开始
+
+这五层有依赖关系。一个更实际的建设顺序是：
+
+1. 先选一个有客观验收标准、风险较低的单任务；
+2. 定义工具 Schema、领域校验、权限和审计，完成 Harness 的最小闭环；
+3. 建立 Context Builder、token 账本、检索引用和记忆写入策略；
+4. 用评测集管理 Prompt 与工具选择的回归；
+5. 当任务需要跨调用继续时，再加入 Task 状态机、预算和评估器；
+6. 只有在并行、条件路由、人工关口和恢复逻辑真的开始复杂时，才引入 Graph。
+
+一个合格的最小系统不需要五个术语全用上。它需要回答这些实现问题：输入从哪里来，事实如何筛选，模型能申请哪些动作，谁执行并授权，状态保存在哪里，何时判定完成，失败后从哪里继续。先把这条最短路径打通，再扩展到长任务和多 Agent，复杂度才可控。
 
 ## 参考与延伸阅读
 
