@@ -1,6 +1,6 @@
 +++
 title = "从 Prompt 到任务图：Agent 工程的五次控制权迁移"
-date = 2026-08-18T12:00:00+08:00
+date = 2026-08-18T09:00:00+08:00
 draft = false
 slug = "prompt-context-harness-loop-graph-engineering"
 author = "尹绍钧"
